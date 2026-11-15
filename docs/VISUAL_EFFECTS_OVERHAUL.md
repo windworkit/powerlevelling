@@ -80,7 +80,7 @@ The first integrated visual sample lives on `visual-overhaul/aura-foundation`. I
 ### Aura mesh
 
 - `AuraMeshRenderer` emits tapered, double-sided flame ribbons with an asymmetric silhouette, inner hot filaments, controlled curvature, and a subtle ground pressure ring.
-- `energy_ribbon.png` is a dedicated 64×128 alpha texture for the flame material. Ki color is applied by vertex tint, so one authored texture supports different character ki colors and Super Saiyan gold.
+- `energy_ribbon.png` is a dedicated 32×64 alpha texture for the flame material. Ki color is applied by vertex tint, so one authored texture supports different character ki colors and Super Saiyan gold.
 - `AuraLayer` continues to resolve synchronized visual state, character tint, cosmetic anchor, helmet behavior, visibility, and LOD. Geometry is delegated to the new renderer.
 - `AuraFirstPersonRenderer` uses the same ribbon language in a restrained peripheral view-space profile, avoiding a bright panel over the crosshair.
 
