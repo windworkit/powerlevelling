@@ -147,15 +147,15 @@ public final class AuraMeshRenderer {
             int a = Mth.clamp((int) (alpha * fade * 255.0f), 0, 255);
             int c = shade(rgb, 0.88f);
             int r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x0 - w0, y0, z, 0f, 0.5f, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, 0.5f, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, 0.5f, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 - w1, y1, z, 0f, 0.5f, r, g, b, a, 0f, 0f, 1f);
             // Back face, so the peripheral strands survive view-space rotations.
-            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x1 - w1, y1, z, 0f, 0.5f, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, 0.5f, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, 0.5f, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 - w0, y0, z, 0f, 0.5f, r, g, b, a, 0f, 0f, -1f);
             oldT = t1;
         }
     }
@@ -205,10 +205,10 @@ public final class AuraMeshRenderer {
         float ag = (rgb >> 8) & 255;
         float ab = rgb & 255;
         int r = (int) ar, g = (int) ag, bl = (int) ab;
-        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.0f, r, g, bl, alpha, a.nx, a.ny, a.nz);
-        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.0f, r, g, bl, alpha, a.nx, a.ny, a.nz);
-        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 1.0f, r, g, bl, alpha, b.nx, b.ny, b.nz);
-        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 1.0f, r, g, bl, alpha, b.nx, b.ny, b.nz);
+        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.5f, r, g, bl, alpha, a.nx, a.ny, a.nz);
+        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.5f, r, g, bl, alpha, a.nx, a.ny, a.nz);
+        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 0.5f, r, g, bl, alpha, b.nx, b.ny, b.nz);
+        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 0.5f, r, g, bl, alpha, b.nx, b.ny, b.nz);
 
         // Reverse winding too: the energy ribbon is visible from every camera angle.
         vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 1.0f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
