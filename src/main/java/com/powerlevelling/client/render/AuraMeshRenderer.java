@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -91,6 +90,76 @@ public final class AuraMeshRenderer {
         }
     }
 
+
+    /**
+     * Peripheral first-person profile. It uses the same tapered ribbon language as third person,
+     * but is scaled in view-space blocks and stays around the edge of the screen.
+     */
+    public static void renderFirstPerson(PoseStack poseStack, MultiBufferSource buffers, int rgb,
+                                         float age, float charge, float strength,
+                                         boolean superSaiyan, boolean turbo) {
+        if (strength <= 0.001f) return;
+        VertexConsumer mesh = buffers.getBuffer(ENERGY);
+        int count = superSaiyan ? 8 : 6;
+        if (turbo) count += 2;
+        float rx = 0.78f + 0.10f * charge;
+        float ry = 0.48f + 0.08f * charge;
+        float zBase = -1.28f;
+        for (int i = 0; i < count; i++) {
+            float seed = i * 2.3999632f + 0.47f;
+            float angle = seed + 0.12f * Mth.sin(age * 0.07f + seed);
+            float cx = Mth.cos(angle) * rx;
+            float cy = Mth.sin(angle) * ry;
+            float h = 0.42f + 0.16f * (0.5f + 0.5f * Mth.sin(seed * 2.3f));
+            float w = 0.075f + 0.025f * charge;
+            drawViewFlame(mesh, poseStack.last(), rgb, cx, cy, zBase + 0.12f * Mth.sin(seed),
+                    h, w, age, seed, strength * (superSaiyan ? 0.25f : 0.19f));
+        }
+        // Two quiet inner traces add motion without putting a glow panel over the crosshair.
+        for (int i = 0; i < 3; i++) {
+            float seed = i * 2.3999632f + 1.2f;
+            float angle = seed - age * 0.035f;
+            float cx = Mth.cos(angle) * rx * 0.72f;
+            float cy = Mth.sin(angle) * ry * 0.72f;
+            drawViewFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, 0.35f),
+                    cx, cy, zBase - 0.08f, 0.34f, 0.027f, age * 1.25f,
+                    seed + 4.0f, strength * 0.14f);
+        }
+    }
+
+    private static void drawViewFlame(VertexConsumer vc, PoseStack.Pose pose, int rgb,
+                                      float cx, float cy, float z, float height, float width,
+                                      float age, float seed, float alpha) {
+        final int segments = 12;
+        float oldT = 0.0f;
+        for (int i = 1; i <= segments; i++) {
+            float t0 = oldT;
+            float t1 = i / (float) segments;
+            float y0 = cy - height * 0.5f + height * t0;
+            float y1 = cy - height * 0.5f + height * t1;
+            float wobble0 = Mth.sin(age * 0.10f + seed + t0 * 5.5f) * 0.045f;
+            float wobble1 = Mth.sin(age * 0.10f + seed + t1 * 5.5f) * 0.045f;
+            float w0 = width * Mth.sin(Mth.PI * t0) * (0.82f + 0.18f * Mth.sin(age * 0.16f + seed));
+            float w1 = width * Mth.sin(Mth.PI * t1) * (0.82f + 0.18f * Mth.sin(age * 0.16f + seed));
+            float x0 = cx + wobble0;
+            float x1 = cx + wobble1;
+            float fade = Mth.sin(Mth.PI * ((t0 + t1) * 0.5f));
+            int a = Mth.clamp((int) (alpha * fade * 255.0f), 0, 255);
+            int c = shade(rgb, 0.88f);
+            int r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
+            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, 1f);
+            // Back face, so the peripheral strands survive view-space rotations.
+            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, -1f);
+            oldT = t1;
+        }
+    }
+
     private static void drawFlame(VertexConsumer vc, PoseStack.Pose pose, int rgb,
                                   float baseAngle, float baseRadius, float height, float maxWidth,
                                   float drift, float age, float seed, float alpha,
@@ -121,7 +190,7 @@ public final class AuraMeshRenderer {
         float angle = baseAngle + wave + curl;
         float radius = baseRadius * (0.78f + 0.20f * envelope + 0.06f * Mth.sin(age * 0.12f + seed + t * 4.0f));
         radius += radialBias * envelope;
-        float y = 22.5f - (height + 7.5f) * t;
+        float y = (22.5f - (height + 7.5f) * t) * 1.0f;
         float taper = (float) Math.pow(Math.max(0.0f, envelope), 0.72);
         float flutter = 0.86f + 0.14f * Mth.sin(age * 0.16f + seed * 2.4f + t * 10.0f);
         float halfWidth = maxWidth * taper * flutter;
