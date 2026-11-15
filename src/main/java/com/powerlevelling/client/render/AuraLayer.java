@@ -116,6 +116,9 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
         poseStack.pushPose();
         try {
             anchor.translateAndRotate(poseStack);
+            // AuraMeshRenderer vertices are authored in player-model pixels.
+            // ModelPart scales its own cubes by 1/16; custom vertices need the same conversion.
+            poseStack.scale(1.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
             // Model space coordinates (+Y is DOWNWARDS):
             // Neck = y=0, Waist = y=12, Feet = y=24, Head = y=-8
 

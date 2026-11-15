@@ -38,7 +38,7 @@ public final class AuraMeshRenderer {
         float stateStrength = superSaiyan ? 1.0f
                 : transforming ? 0.92f + 0.18f * charge
                 : charging ? 0.72f + 0.28f * charge
-                : turbo ? 0.84f : 0.48f;
+                : turbo ? 0.84f : 0.76f;
         if (turbo) stateStrength *= 1.12f;
         // AURA_OPACITY was historically tuned for tiny particle sprites. The ribbon mesh
         // needs a stronger response at the same config value to be visible in third person.
@@ -49,7 +49,7 @@ public final class AuraMeshRenderer {
         float height = superSaiyan ? 48.0f : 40.0f + 14.0f * charge;
         if (transforming) height += 6.0f * (0.5f + 0.5f * Mth.sin(age * 0.32f));
         if (turbo) height += 4.0f;
-        if (!charging && !transforming && !superSaiyan && !turbo) height = 34.0f;
+        if (!charging && !transforming && !superSaiyan && !turbo) height = 46.0f;
 
         // Place the ribbon centerlines outside the player model's roughly 4 px torso
         // half-width; this avoids the skin depth-buffer hiding most of the effect.
@@ -61,7 +61,7 @@ public final class AuraMeshRenderer {
         }
 
         VertexConsumer mesh = buffers.getBuffer(ENERGY);
-        int mainCount = superSaiyan ? 9 : charging || transforming ? 8 : 6;
+        int mainCount = superSaiyan ? 9 : charging || transforming ? 8 : 8;
         int filamentCount = lodTier >= 2 ? 4 : lodTier == 1 ? 7 : 11;
         if (turbo) mainCount += 2;
         if (lodTier >= 2) {
@@ -77,7 +77,7 @@ public final class AuraMeshRenderer {
             float w = width * (0.78f + 0.34f * (0.5f + 0.5f * Mth.sin(seed * 3.7f)));
             float drift = 0.11f + 0.035f * Mth.sin(seed * 4.3f);
             float alpha = output * (superSaiyan ? 0.78f
-                    : charging || transforming ? 0.72f : turbo ? 0.68f : 0.58f);
+                    : charging || transforming ? 0.72f : turbo ? 0.68f : 0.72f);
             drawFlame(mesh, poseStack.last(), rgb, angle, radius, h, w, drift,
                     age, seed, alpha * 1.15f, 1.0f, 0.70f, scale);
 
@@ -100,12 +100,12 @@ public final class AuraMeshRenderer {
                     output * 0.32f, 0.18f, 0.92f, scale);
         }
 
-        // A restrained pressure halo appears only as output rises; it sits at boot level.
+        // The pulse ring wraps the torso; ground debris is handled separately.
         if (charging || transforming || superSaiyan || turbo) {
             float pulse = 0.92f + 0.08f * Mth.sin(age * 0.18f);
             VertexConsumer pressure = buffers.getBuffer(PRESSURE);
             drawPressureRing(pressure, poseStack.last(), rgb, (6.2f + 1.8f * charge) * scale * pulse,
-                    22.9f * scale, output * (transforming ? 0.30f : charging ? 0.26f : turbo ? 0.25f : 0.20f));
+                    10.0f * scale, output * (transforming ? 0.30f : charging ? 0.26f : turbo ? 0.25f : 0.20f));
         }
     }
 
