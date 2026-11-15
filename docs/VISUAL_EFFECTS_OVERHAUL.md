@@ -1,3 +1,5 @@
+> **Current-status notice (2026-11-15):** This art-direction document contains historical notes from an early branch experiment. For current implementation facts, exact AI-model attribution, out-of-scope rollback, commits, test evidence, and the remaining plan, read **docs/AI_WORK_LOG.md**. Ki-orb mesh notes below are explicitly historical and reverted.
+
 # Visual Effects Overhaul — Aura & Ki Direction
 
 This is a clean visual direction for the next effects pass. Existing effects are reference-only; the new presentation should not inherit their shapes or visual assumptions.
@@ -35,15 +37,9 @@ Color comes from the character's aura/ki color. Keep the value range controlled 
 | Super Saiyan | Tall, confident golden flame silhouette with a bright inner edge | Sparse electrical arcs |
 | High-output / Turbo | Stronger amplitude and density, not simply a larger copy | More frequent pressure waves |
 
-## Ki attacks
+## Explicitly out of scope for the current implementation
 
-Ki attacks should share a material language with the aura but have their own silhouettes:
-
-- **Orbs:** bright core, colored shell, controlled surface motion, and a soft falloff.
-- **Blasts:** compact projectile with a clear direction and a short trailing wake.
-- **Beams:** stable bright center, colored body, soft outer envelope, and impact flare.
-- **Discs:** thin, sharply readable edge and a restrained motion trail.
-- **Impacts:** brief radial flash, expanding ring, then dissipating fragments.
+Ki attacks and projectiles are not part of the current authorized visual pass. This includes ki orbs, blasts, beams, discs, impacts, their renderers, and their mechanics. The current task is limited to charging, body aura, transformation, untransformation, and Turbo visuals. Do not implement the older ki-attack visual ideas below unless the user separately authorizes that work.
 
 ## Technical approach
 
@@ -66,31 +62,32 @@ Ki attacks should share a material language with the aura but have their own sil
 
 ## Implementation order
 
-1. Replace the baseline aura presentation with the new layered flame silhouette.
-2. Add charging ramp and transformation transition timing.
-3. Add a distinct Super Saiyan profile and restrained lightning.
-4. Rework ki orb, blast, beam, disc, and impact visuals to share the same material language.
-5. Add additional transformation/aura profiles after the first family is tested in-game.
+1. Validate the current body aura and particle placement in-game before making more speculative renderer changes.
+2. Refine the stance and charging aura into a clearly readable, upward-flowing silhouette.
+3. Verify ground-originating rocks/debris and remove any remaining foot-level screen-obscuring sprites.
+4. Add dedicated transformation and untransformation transitions, using visual-only state handling.
+5. Refine Turbo and Super Saiyan profiles after the baseline aura is visually accepted.
+6. Ki attacks/projectiles remain out of scope unless the user separately authorizes them.
 
 
-## First implementation sample (feature branch)
+## Historical first implementation sample (partly superseded)
 
-The first integrated visual sample lives on `visual-overhaul/aura-foundation`. It intentionally uses procedural mesh geometry rather than a static Blockbench rig for the aura and charged orb: their defining shapes deform continuously every frame, so a dedicated renderer is a better fit than forcing them into a bone animation.
+This section began as an implementation snapshot, not a guarantee of current branch contents. The current source of truth is docs/AI_WORK_LOG.md. The procedural aura mesh remains in the branch. The experimental ki-orb mesh described below was out of scope and has been reverted by commit 6b75f7a5f4d88020d3168bd59abc9024f24d0425.
 
-### Aura mesh
+### Aura mesh (current status in docs/AI_WORK_LOG.md)
 
 - `AuraMeshRenderer` emits tapered, double-sided flame ribbons with an asymmetric silhouette, inner hot filaments, controlled curvature, and a subtle ground pressure ring.
 - `energy_ribbon.png` is a dedicated 32×64 alpha texture for the flame material. Ki color is applied by vertex tint, so one authored texture supports different character ki colors and Super Saiyan gold.
 - `AuraLayer` continues to resolve synchronized visual state, character tint, cosmetic anchor, helmet behavior, visibility, and LOD. Geometry is delegated to the new renderer.
 - `AuraFirstPersonRenderer` uses the same ribbon language in a restrained peripheral view-space profile, avoiding a bright panel over the crosshair.
 
-### Ki orb mesh
+### Temporary ki-orb mesh experiment — reverted
 
-- `KiOrbMeshRenderer` replaces the cubic orb silhouette with a UV sphere plasma shell, nested hot core, two tilted orbital bands, a wrapping filament, and the existing smooth trail for moving blasts.
-- `ki_plasma_shell.png` is a dedicated wrapped-UV plasma surface texture; the sphere no longer stretches the old cube-face texture over its surface.
-- `KiOrbModel.render` remains the shared API, so hand-formed orbs and travelling blasts use the same mesh.
-- `KiOrbStyles` now handles only formation/shape profiles (default, barrage, homing, bomb, beam, and disc). The disc remains on its legacy geometry for the next pass.
+- A temporary KiOrbMeshRenderer / plasma-shell experiment appeared in intermediate commits.
+- It was outside the user-approved scope and was removed in commit 6b75f7a5f4d88020d3168bd59abc9024f24d0425.
+- KiBlastRenderer.java, KiOrbHandRenderer.java, KiOrbModel.java, and KiOrbStyles.java were restored from main; KiOrbMeshRenderer.java and ki_plasma_shell.png were removed.
+- This is historical context only. Do not treat the orb mesh as part of the current branch or recreate it under the current scope.
 
 ### Validation status
 
-The source changes are committed on the feature branch, but they have **not** been verified in a running Minecraft client. A Gradle GitHub Actions workflow was added for the branch; the repository currently reports the job failing before any steps are assigned or started, with no downloadable job log. Do not treat that as a compile result. The required next check is a local `./gradlew build`, followed by an in-game pass covering both player skins, first/third person, preview, charge ramp, transformed idle, and multiple players in view.
+The source changes are committed on the feature branch, but the current head 689ef584a075c8c0c5dd2e7cdb47a25fe4b5f097 has **not** been verified by a successful clean build or post-patch Minecraft test. Recent GitHub Actions runs report failure without a useful compiler result; do not interpret that alone as proof of a Java compilation error or proof of a passing build. The user previously reported weak/no visible changes and provided screenshots showing pale arcs and foot-level effects. The latest aura particle/ring revision was pushed after that screenshot and still requires local testing. See docs/AI_WORK_LOG.md for the full commit timeline, model attribution, scope, current state, and test plan.
