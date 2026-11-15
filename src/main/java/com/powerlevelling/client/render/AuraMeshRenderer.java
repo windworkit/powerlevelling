@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A mesh-built ki aura. Unlike the previous effect stack, this draws continuous, tapered
@@ -14,7 +15,9 @@ import net.minecraft.util.Mth;
  * directly in player-model space, so it follows the same body anchor as the player layer.
  */
 public final class AuraMeshRenderer {
-    private static final RenderType ENERGY = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
+    private static final ResourceLocation RIBBON_TEXTURE = ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/energy_ribbon.png");
+    private static final RenderType ENERGY = RenderType.eyes(RIBBON_TEXTURE);
+    private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
 
@@ -147,15 +150,15 @@ public final class AuraMeshRenderer {
             int a = Mth.clamp((int) (alpha * fade * 255.0f), 0, 255);
             int c = shade(rgb, 0.88f);
             int r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-            vertex(vc, pose, x0 - w0, y0, z, 0f, 0.5f, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x0 + w0, y0, z, 1f, 0.5f, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x1 + w1, y1, z, 1f, 0.5f, r, g, b, a, 0f, 0f, 1f);
-            vertex(vc, pose, x1 - w1, y1, z, 0f, 0.5f, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, 1f);
+            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, 1f);
             // Back face, so the peripheral strands survive view-space rotations.
-            vertex(vc, pose, x1 - w1, y1, z, 0f, 0.5f, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x1 + w1, y1, z, 1f, 0.5f, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x0 + w0, y0, z, 1f, 0.5f, r, g, b, a, 0f, 0f, -1f);
-            vertex(vc, pose, x0 - w0, y0, z, 0f, 0.5f, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x1 - w1, y1, z, 0f, t1, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x1 + w1, y1, z, 1f, t1, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 + w0, y0, z, 1f, t0, r, g, b, a, 0f, 0f, -1f);
+            vertex(vc, pose, x0 - w0, y0, z, 0f, t0, r, g, b, a, 0f, 0f, -1f);
             oldT = t1;
         }
     }
@@ -176,7 +179,7 @@ public final class AuraMeshRenderer {
             int a = alpha * envelope * flicker > 0.001f
                     ? Mth.clamp((int) (alpha * envelope * flicker * 255.0f), 0, 255) : 0;
             int color = shade(rgb, brightness + 0.08f * (1.0f - mid));
-            emitRibbon(vc, pose, previous, next, color, a);
+            emitRibbon(vc, pose, previous, next, color, a, previousT, t);
             previous = next;
             previousT = t;
         }
@@ -200,27 +203,28 @@ public final class AuraMeshRenderer {
     }
 
     private static void emitRibbon(VertexConsumer vc, PoseStack.Pose pose, FlamePoint a, FlamePoint b,
-                                   int rgb, int alpha) {
+                                   int rgb, int alpha, float v0, float v1) {
         float ar = (rgb >> 16) & 255;
         float ag = (rgb >> 8) & 255;
         float ab = rgb & 255;
         int r = (int) ar, g = (int) ag, bl = (int) ab;
-        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.5f, r, g, bl, alpha, a.nx, a.ny, a.nz);
-        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.5f, r, g, bl, alpha, a.nx, a.ny, a.nz);
-        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 0.5f, r, g, bl, alpha, b.nx, b.ny, b.nz);
-        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 0.5f, r, g, bl, alpha, b.nx, b.ny, b.nz);
+        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, v0, r, g, bl, alpha, a.nx, a.ny, a.nz);
+        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, v0, r, g, bl, alpha, a.nx, a.ny, a.nz);
+        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, v1, r, g, bl, alpha, b.nx, b.ny, b.nz);
+        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, v1, r, g, bl, alpha, b.nx, b.ny, b.nz);
 
         // Reverse winding too: the energy ribbon is visible from every camera angle.
-        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 0.5f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
-        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 0.5f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
-        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.5f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
-        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.5f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
+        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, v1, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
+        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, v1, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
+        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, v0, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
+        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, v0, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
     }
 
     private static void drawPressureRing(VertexConsumer vc, PoseStack.Pose pose, int rgb,
                                          float radius, float y, float alpha) {
         int a = Mth.clamp((int) (alpha * 255.0f), 0, 255);
         int color = mix(rgb, 0xFFFFFF, 0.30f);
+        // The pressure ring uses the radial glow texture, separate from the shaped flame ribbon atlas.
         int r = (color >> 16) & 255, g = (color >> 8) & 255, b = color & 255;
         int segments = 36;
         float inner = radius * 0.72f;
