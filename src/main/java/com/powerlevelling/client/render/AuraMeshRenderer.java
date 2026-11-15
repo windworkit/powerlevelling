@@ -61,7 +61,7 @@ public final class AuraMeshRenderer {
             float drift = 0.11f + 0.035f * Mth.sin(seed * 4.3f);
             float alpha = output * (superSaiyan ? 0.27f : 0.20f);
             drawFlame(mesh, poseStack.last(), rgb, angle, radius, h, w, drift,
-                    age, seed, alpha * 1.55f, 1.0f, 0.70f);
+                    age, seed, alpha * 1.55f, 1.0f, 0.70f, scale);
 
             // Hot inner filament. Kept narrow so the player remains readable through the aura.
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, superSaiyan ? 0.56f : 0.40f),
@@ -163,13 +163,13 @@ public final class AuraMeshRenderer {
     private static void drawFlame(VertexConsumer vc, PoseStack.Pose pose, int rgb,
                                   float baseAngle, float baseRadius, float height, float maxWidth,
                                   float drift, float age, float seed, float alpha,
-                                  float radialBias, float brightness) {
+                                  float radialBias, float brightness, float scale) {
         final int segments = 15;
         float previousT = 0.0f;
-        FlamePoint previous = point(baseAngle, baseRadius, height, maxWidth, drift, age, seed, radialBias, 0.001f);
+        FlamePoint previous = point(baseAngle, baseRadius, height, maxWidth, drift, age, seed, radialBias, 0.001f, scale);
         for (int i = 1; i <= segments; i++) {
             float t = i / (float) segments;
-            FlamePoint next = point(baseAngle, baseRadius, height, maxWidth, drift, age, seed, radialBias, t);
+            FlamePoint next = point(baseAngle, baseRadius, height, maxWidth, drift, age, seed, radialBias, t, scale);
             float mid = (previousT + t) * 0.5f;
             float envelope = Mth.sin(Mth.PI * mid);
             float flicker = 0.83f + 0.17f * Mth.sin(age * 0.18f + seed * 3.7f + mid * 8.0f);
@@ -183,14 +183,14 @@ public final class AuraMeshRenderer {
     }
 
     private static FlamePoint point(float baseAngle, float baseRadius, float height, float maxWidth,
-                                    float drift, float age, float seed, float radialBias, float t) {
+                                    float drift, float age, float seed, float radialBias, float t, float scale) {
         float envelope = Mth.sin(Mth.PI * t);
         float wave = Mth.sin(age * 0.105f + seed + t * 7.4f) * drift * envelope;
         float curl = Mth.sin(seed * 2.0f + t * 5.0f) * 0.075f * envelope;
         float angle = baseAngle + wave + curl;
         float radius = baseRadius * (0.78f + 0.20f * envelope + 0.06f * Mth.sin(age * 0.12f + seed + t * 4.0f));
         radius += radialBias * envelope;
-        float y = (22.5f - (height + 7.5f) * t) * 1.0f;
+        float y = (22.5f - (height + 7.5f) * t) * scale;
         float taper = (float) Math.pow(Math.max(0.0f, envelope), 0.72);
         float flutter = 0.86f + 0.14f * Mth.sin(age * 0.16f + seed * 2.4f + t * 10.0f);
         float halfWidth = maxWidth * taper * flutter;
@@ -230,10 +230,10 @@ public final class AuraMeshRenderer {
             float a1 = TWO_PI * (i + 1) / segments;
             float x0 = Mth.cos(a0), z0 = Mth.sin(a0);
             float x1 = Mth.cos(a1), z1 = Mth.sin(a1);
-            vertex(vc, pose, x0 * inner, y, z0 * inner, 0f, 0f, r, g, b, a, 0f, -1f, 0f);
-            vertex(vc, pose, x0 * outer, y, z0 * outer, 1f, 0f, r, g, b, a, 0f, -1f, 0f);
-            vertex(vc, pose, x1 * outer, y, z1 * outer, 1f, 1f, r, g, b, a, 0f, -1f, 0f);
-            vertex(vc, pose, x1 * inner, y, z1 * inner, 0f, 1f, r, g, b, a, 0f, -1f, 0f);
+            vertex(vc, pose, x0 * inner, y, z0 * inner, 0.5f, 0.5f, r, g, b, a, 0f, -1f, 0f);
+            vertex(vc, pose, x0 * outer, y, z0 * outer, 0.5f, 0.5f, r, g, b, a, 0f, -1f, 0f);
+            vertex(vc, pose, x1 * outer, y, z1 * outer, 0.5f, 0.5f, r, g, b, a, 0f, -1f, 0f);
+            vertex(vc, pose, x1 * inner, y, z1 * inner, 0.5f, 0.5f, r, g, b, a, 0f, -1f, 0f);
         }
     }
 
