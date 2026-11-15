@@ -18,6 +18,7 @@ public final class AuraMeshRenderer {
     private static final ResourceLocation RIBBON_TEXTURE = ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/energy_ribbon.png");
     private static final RenderType ENERGY = RenderType.eyes(RIBBON_TEXTURE);
     private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
+    private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
 
@@ -88,7 +89,8 @@ public final class AuraMeshRenderer {
         // A restrained pressure halo appears only as output rises; it sits at boot level.
         if (charging || transforming || superSaiyan || turbo) {
             float pulse = 0.92f + 0.08f * Mth.sin(age * 0.18f);
-            drawPressureRing(mesh, poseStack.last(), rgb, (4.25f + 1.15f * charge) * scale * pulse,
+            VertexConsumer pressure = buffers.getBuffer(PRESSURE);
+            drawPressureRing(pressure, poseStack.last(), rgb, (4.25f + 1.15f * charge) * scale * pulse,
                     22.9f * scale, output * (transforming ? 0.16f : 0.10f));
         }
     }
@@ -192,7 +194,7 @@ public final class AuraMeshRenderer {
         float curl = Mth.sin(seed * 2.0f + t * 5.0f) * 0.075f * envelope;
         float angle = baseAngle + wave + curl;
         float radius = baseRadius * (0.78f + 0.20f * envelope + 0.06f * Mth.sin(age * 0.12f + seed + t * 4.0f));
-        radius += radialBias * envelope;
+        radius += radialBias * envelope * scale;
         float y = (22.5f - (height + 7.5f) * t) * scale;
         float taper = (float) Math.pow(Math.max(0.0f, envelope), 0.72);
         float flutter = 0.86f + 0.14f * Mth.sin(age * 0.16f + seed * 2.4f + t * 10.0f);
