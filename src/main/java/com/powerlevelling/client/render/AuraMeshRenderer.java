@@ -18,7 +18,6 @@ public final class AuraMeshRenderer {
     private static final ResourceLocation RIBBON_TEXTURE = ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/energy_ribbon.png");
     private static final RenderType ENERGY = RenderType.eyes(RIBBON_TEXTURE);
     private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
-    private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
 
