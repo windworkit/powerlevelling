@@ -133,32 +133,10 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
             // Model space coordinates (+Y is DOWNWARDS):
             // Neck = y=0, Waist = y=12, Feet = y=24, Head = y=-8
 
-            // 1. Ground flare on the floor under the boots (y = +24)
-            renderGroundFlare(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 2. Rising energy wisps surging upwards from feet to head
-            renderWisps(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 3. Expanding DBZ shockwave rings rising from the boots
-            renderRings(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 4. SSJ / Charging teardrop flame shell wrapping the entire character
-            boolean flameShellEnabled = lodTier == 0 ? ClientConfig.AURA_LOD_FLAME_SHELL_1.get()
-                    : lodTier == 1 ? ClientConfig.AURA_LOD_FLAME_SHELL_2.get() : false;
-            if (flameShellEnabled) {
-                renderFlameShell(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-            }
-
-            // 5. Soft energy halo around mid-torso (y = +8)
-            drawSoftGlow(poseStack, buffer, (4.5f + ramp * 2f) * scale, auraColor, age * 0.7f,
-                         intense ? 0.05f + ramp * 0.05f : isSSJ ? 0.04f : 0.02f, alphaScale);
-
-            // 6. Lightning crackle arcing along the aura height
-            boolean lightningEnabled = lodTier == 0 ? ClientConfig.AURA_LOD_LIGHTNING_1.get()
-                    : lodTier == 1 ? ClientConfig.AURA_LOD_LIGHTNING_2.get() : false;
-            if (lightningEnabled) {
-                renderLightningCrackle(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-            }
+            // The new mesh renderer owns the silhouette and internal energy strands.
+            // Legacy helpers remain below temporarily for compatibility with the first-person layer.
+            AuraMeshRenderer.render(poseStack, buffer, color, scale, age, ramp,
+                    charging, transforming, isSSJ, isTurbo, lodTier, alphaScale);
 
         } finally {
             poseStack.popPose();
