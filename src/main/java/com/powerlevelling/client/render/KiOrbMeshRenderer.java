@@ -165,10 +165,16 @@ public final class KiOrbMeshRenderer {
             Point nextRight = new Point(next.x + cx, next.y + cy, next.z + cz, next.nx, next.ny, next.nz);
             float fade = 0.35f + 0.65f * Mth.sin(Mth.PI * t);
             int bandAlpha = Mth.clamp((int) (a * fade), 0, 255);
+            // Winding follows the outward radial normal.
             vertex(vc, pose, left, 0f, t, r, g, b, bandAlpha);
+            vertex(vc, pose, nextLeft, 0f, t + 1f / segments, r, g, b, bandAlpha);
+            vertex(vc, pose, nextRight, 1f, t + 1f / segments, r, g, b, bandAlpha);
+            vertex(vc, pose, right, 1f, t, r, g, b, bandAlpha);
+            // Back face for the opposite side of the wrapped filament.
             vertex(vc, pose, right, 1f, t, r, g, b, bandAlpha);
             vertex(vc, pose, nextRight, 1f, t + 1f / segments, r, g, b, bandAlpha);
             vertex(vc, pose, nextLeft, 0f, t + 1f / segments, r, g, b, bandAlpha);
+            vertex(vc, pose, left, 0f, t, r, g, b, bandAlpha);
             previous = next;
         }
     }
