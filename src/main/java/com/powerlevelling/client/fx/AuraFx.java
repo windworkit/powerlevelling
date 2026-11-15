@@ -361,9 +361,7 @@ public final class AuraFx {
     private static void spawnStanceAura(ClientLevel level, Player player, long gameTime, float density, float auraDensity) {
         if (auraDensity <= 0f) return;
         RandomSource rand = level.random;
-        int tint = auraColorOf(player, -1);
-        if (tint < 0) return;
-        
+        // The main body aura remains visible even when no custom character color is set.
         double height = player.getBbHeight();
         double yCenter = player.getY() + height * 0.5;
         
