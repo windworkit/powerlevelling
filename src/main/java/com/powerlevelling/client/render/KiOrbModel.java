@@ -15,24 +15,52 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 /**
- * Shared spherical ki-orb model for hand charging and travelling blasts. The actual geometry is emitted by
- * KiOrbMeshRenderer: a translucent plasma shell, hot core, orbital bands, a wrapping filament, and an optional tail.
- * Disc attacks retain their own flat-disc geometry.
+ * The reusable 3D ki orb: a real blocky model built from cubes emitted by hand (no billboards, no model files). Used by the
+ * flying blast ({@link KiBlastRenderer}, with tail) and by the "ki forms in your hand" orb (third person layer and first
+ * person hand, without tail), so a forming orb and the blast it becomes look identical.
+ * <ul>
+ *   <li>core: a solid, full-bright cube in the core colour (plus a faint additive overlay so it glows),</li>
+ *   <li>two translucent shell cubes in the ki colour that tumble on different axes at different speeds,</li>
+ *   <li>one very faint, big outer glow cube,</li>
+ *   <li>camera-independent radial glow halos (3 orthogonal quads) for a Dragon Ball style soft spherical glow,</li>
+ *   <li>energy spikes/crackle emanating from the core,</li>
+ *   <li>optionally a tail of 4 shrinking, fading cubes trailing along {@code tailDir}.</li>
+ * </ul>
+ * All sizes are fractions of the diameter (2 * radius). Everything except the solid core uses RenderType.eyes: additive,
+ * full-bright, no depth writes, so the layers never hide each other and need no sorting. Back faces of eyes() are culled,
+ * so every cube is wound counter-clockwise seen from outside.
  */
 public final class KiOrbModel {
-    /** Subtle pixel texture used across the spherical plasma shell. */
+    /** White 16x16 with a lighter 1px border and a faint pixel pattern, so cube faces read as blocky, not flat. */
     public static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(PowerLevelling.MODID, "textures/entity/ki_blast.png");
 
-    /** Soft radial glow texture sampled by the inner core and energy ribbons (64x64). */
+    /** Soft radial glow texture for camera-independent halos (64x64). */
     public static final ResourceLocation GLOW_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(PowerLevelling.MODID, "textures/entity/ki_glow.png");
 
-    /** Wrapped UV plasma surface for the new spherical orb mesh. */
-    public static final ResourceLocation PLASMA_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(PowerLevelling.MODID, "textures/entity/ki_plasma_shell.png");
+    // ---- sizes, as fractions of the diameter (edge lengths) ----
+    private static final float CORE_EDGE = 0.45f;
+    private static final float SHELL_INNER_EDGE = 0.75f;
+    private static final float SHELL_OUTER_EDGE = 1.0f;
+    private static final float GLOW_EDGE = 1.5f;
 
-    /** Per-face brightness for the remaining faceted disc geometry. */
+    // ---- alphas (0..1) ----
+    private static final float CORE_GLOW_ALPHA = 0.20f;
+    private static final float SHELL_INNER_ALPHA = 0.55f;
+    private static final float SHELL_OUTER_ALPHA = 0.30f;
+    private static final float GLOW_ALPHA = 0.12f;
+
+    /** Pulse: +-6% at 3 Hz. 3 cycles/s * 2pi / 20 ticks/s = 0.942 rad per tick. */
+    private static final float PULSE_AMOUNT = 0.06f;
+    private static final float PULSE_RAD_PER_TICK = 0.942f;
+
+    // ---- tail: edge (fraction of diameter), alpha, distance behind the centre (fraction of diameter) ----
+    private static final float[] TAIL_EDGE = {0.38f, 0.30f, 0.23f, 0.16f};
+    private static final float[] TAIL_ALPHA = {0.50f, 0.36f, 0.24f, 0.12f};
+    private static final float[] TAIL_DIST = {0.55f, 1.05f, 1.55f, 2.05f};
+
+    /** Per-face brightness (+X, -X, +Y, -Y, +Z, -Z) for the unlit additive cubes, so they read as cubes when they spin. */
     private static final float[] FACE_SHADE = {0.85f, 0.70f, 1.00f, 0.55f, 0.90f, 0.75f};
 
     /**
@@ -53,12 +81,73 @@ public final class KiOrbModel {
     }
 
     /**
-     * Draws the shared hand-orb / travelling-blast model. Geometry is emitted by KiOrbMeshRenderer.
+     * Draws the orb centred on the current pose origin (the caller translates to where the orb is).
+     *
+     * @param radius      orb radius in blocks of the current pose's units (shells = radius, outer glow = 1.5 * radius)
+     * @param color       shell / glow / tail colour (packed RGB)
+     * @param coreColor   core colour (packed RGB)
+     * @param ageTicks    whole ticks the thing has existed (entity.tickCount): drives tumbling and pulsing
+     * @param partialTick fraction of the current tick, added to ageTicks
+     * @param alphaMul    0..1 multiplier on every alpha (fade in / out)
+     * @param withTail    draw the 4-cube tail
+     * @param tailDir     direction the tail trails towards (i.e. opposite to the travel direction), in the current pose's
+     *                    axes; ignored when withTail is false or the vector is ~zero
      */
     public static void render(PoseStack poseStack, MultiBufferSource buffer, float radius, int color, int coreColor,
                               float ageTicks, float partialTick, float alphaMul, boolean withTail, Vec3 tailDir) {
-        KiOrbMeshRenderer.render(poseStack, buffer, radius, color, coreColor,
-                ageTicks + partialTick, alphaMul, withTail, tailDir);
+        if (radius <= 0f || alphaMul <= 0f) return;
+        final float diameter = radius * 2f;
+        final float age = ageTicks + partialTick;
+        final float pulse = 1f + PULSE_AMOUNT * Mth.sin(age * PULSE_RAD_PER_TICK);
+        final int light = LightTexture.FULL_BRIGHT;
+
+        // 1) Core, solid and full-bright (opaque, so it writes depth and hides whatever is behind it).
+        poseStack.pushPose();
+        spin(poseStack, age, 4f, 7f, 3f);
+        float coreHalf = diameter * CORE_EDGE * 0.5f * pulse;
+        cube(buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), poseStack.last(), coreHalf, coreColor,
+                alpha(1f * alphaMul), light, false);
+        poseStack.popPose();
+
+        // 2) Everything else is additive (order independent). One RenderType, so the buffer is only switched once.
+        VertexConsumer glow = buffer.getBuffer(RenderType.eyes(TEXTURE));
+
+        // Faint additive overlay on the core: lifts the darker faces so the core looks self-lit.
+        poseStack.pushPose();
+        spin(poseStack, age, 4f, 7f, 3f);
+        cube(glow, poseStack.last(), coreHalf * 1.04f, coreColor, alpha(CORE_GLOW_ALPHA * alphaMul), light, true);
+        poseStack.popPose();
+
+        // Inner shell, then outer shell (inner to outer), tumbling on different axes at different speeds.
+        poseStack.pushPose();
+        spin(poseStack, age, -9f, 5f, 2f);
+        cube(glow, poseStack.last(), diameter * SHELL_INNER_EDGE * 0.5f * pulse, color, alpha(SHELL_INNER_ALPHA * alphaMul), light, true);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        spin(poseStack, age, 3f, -4f, 6f);
+        cube(glow, poseStack.last(), diameter * SHELL_OUTER_EDGE * 0.5f * pulse, color, alpha(SHELL_OUTER_ALPHA * alphaMul), light, true);
+        poseStack.popPose();
+
+        // Outer glow: one big, barely-there cube, turning slowly.
+        poseStack.pushPose();
+        spin(poseStack, age, 1.5f, -2f, 1f);
+        cube(glow, poseStack.last(), diameter * GLOW_EDGE * 0.5f * pulse, color, alpha(GLOW_ALPHA * alphaMul), light, true);
+        poseStack.popPose();
+
+        // 3) DRAGON BALL STYLE: Camera-independent radial glow halos (soft spherical glow)
+        // Using 3 orthogonal quads with the radial glow texture for a spherical look from any angle
+        renderGlowHalos(poseStack, buffer, diameter * 0.85f, color, age, alphaMul * 0.9f);
+
+        // 4) DRAGON BALL STYLE: Energy spikes/crackle emanating from the core
+        // Number of spikes scales with radius for bigger blasts
+        int spikeCount = 6 + (int) (radius * 6f);
+        renderEnergySpikes(poseStack, buffer, spikeCount, diameter * 0.55f, diameter * 0.7f, color, age, alphaMul * 0.7f);
+
+        // 5) Tail: smoother comet tail with soft quads instead of discrete cubes (Dragon Ball style energy trail)
+        if (withTail && tailDir != null && tailDir.lengthSqr() > 1.0E-6) {
+            renderSmoothTail(poseStack, buffer, radius, color, coreColor, tailDir, age, alphaMul);
+        }
     }
 
     /**

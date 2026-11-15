@@ -1,77 +1,141 @@
 package com.powerlevelling.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.powerlevelling.client.ClientOrbState;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
 
 /**
- * Shape profiles for charged ki. The base orb is the same continuous mesh in hand and in flight;
- * these profiles only change placement, scale, and formation.
+ * What the in-hand "ki forming" orb looks like, picked by the attack's present.shape (K2-K4): the default round orb, or
+ * disc (flat spinning saw above the palm), barrage (small flickers in both hands), homing (mini orbs circling the hand),
+ * bomb (pulsing dark-cored orb). Shared by the third-person layer ({@link KiOrbLayer}) and the first-person hand
+ * ({@link KiOrbHandRenderer}); everything is drawn around the current pose origin.
+ * <p>
+ * DRAGON BALL STYLE: All orb variants now feature camera-independent radial glow halos and energy spikes/crackle
+ * for that signature Dragon Ball "unstable energy" look.
  */
 public final class KiOrbStyles {
     private KiOrbStyles() {
     }
 
     /**
-     * @param up sign of "up" on the pose's Y axis: +1 in first-person view space, -1 in player model space
-     * @param lateral half the distance between hands for a two-orb barrage
-     * @param elapsed ticks since charging began
+     * @param up      sign of "up" on the pose's Y axis: +1 in first-person view space, -1 in the player model space
+     * @param lateral half the distance between the two hands for the barrage flickers (pose units)
+     * @param elapsed ticks since the orb started (drives the bomb's pulse)
      */
-    public static void render(ClientOrbState.Orb orb, PoseStack pose, MultiBufferSource buffer, float radius,
-                              float ageTicks, float partial, float alpha, float up, float lateral, float elapsed) {
+    public static void render(ClientOrbState.Orb orb, PoseStack pose, MultiBufferSource buf, float radius, float ageTicks,
+                              float partial, float alpha, float up, float lateral, float elapsed) {
         float age = ageTicks + partial;
-        float progress = Mth.clamp(orb.progress(elapsed), 0.0f, 1.0f);
-
         switch (orb.shape) {
             case "disc" -> {
+                // Flat saw hovering above the raised palm, spinning up as the windup runs.
                 pose.pushPose();
                 pose.translate(0.0, up * radius * 1.15f, 0.0);
-                KiOrbModel.renderDisc(pose, buffer, radius * 1.6f, radius * 0.45f,
-                        orb.color, orb.coreColor, ageTicks, partial, alpha,
-                        0.6f + progress * 1.6f);
+                KiOrbModel.renderDisc(pose, buf, radius * 1.6f, radius * 0.45f, orb.color, orb.coreColor, ageTicks, partial,
+                        alpha, 0.6f + Math.min(1f, orb.progress(elapsed)) * 1.6f);
+                
+                // DRAGON BALL STYLE: Add glow halos to disc (flat but still gets spherical glow)
+                float discRadius = radius * 1.6f;
+                KiOrbModel.renderGlowHalos(pose, buf, discRadius * 0.9f, orb.color, age * 1.5f, alpha * 0.6f);
+                // Energy crackle around disc edge
+                int discSpikes = 8 + (int)(radius * 4f);
+                KiOrbModel.renderEnergySpikes(pose, buf, discSpikes, discRadius * 0.6f, discRadius * 0.8f, orb.color, age * 2f, alpha * 0.5f);
                 pose.popPose();
             }
             case "barrage" -> {
+                // A small orb in each palm, flickering at different rates.
                 for (int side = -1; side <= 1; side += 2) {
-                    float pulse = 0.78f + 0.22f * Mth.sin(age * (1.25f + side * 0.18f) + side * 1.3f);
+                    float flick = 0.65f + 0.45f * Mth.sin(age * (1.7f + 0.4f * side) + side * 1.3f)
+                            * Mth.sin(age * 0.9f + side) ;
                     pose.pushPose();
                     pose.translate(side * lateral, 0.0, 0.0);
-                    KiOrbModel.render(pose, buffer, radius * pulse, orb.color, orb.coreColor,
-                            ageTicks, partial, alpha, false, null);
+                    float orbRad = radius * Mth.clamp(flick, 0.35f, 1.15f);
+                    KiOrbModel.render(pose, buf, orbRad, orb.color, orb.coreColor, ageTicks,
+                            partial, alpha, false, null);
+                    
+                    // DRAGON BALL STYLE: Each barrage orb gets mini glow halos
+                    KiOrbModel.renderGlowHalos(pose, buf, orbRad * 1.2f, orb.color, age * (2f + side * 0.3f), alpha * 0.5f);
                     pose.popPose();
                 }
             }
             case "homing" -> {
-                // A central seed orb with five satellites following a slightly tilted orbital path.
-                KiOrbModel.render(pose, buffer, radius * 0.52f, orb.color, orb.coreColor,
-                        ageTicks, partial, alpha, false, null);
-                int count = 5;
-                float orbitRadius = radius * 2.35f;
-                for (int i = 0; i < count; i++) {
-                    float angle = age * 0.22f + i * Mth.TWO_PI / count;
-                    float vertical = Mth.sin(angle * 0.72f + i * 0.9f) * orbitRadius * 0.42f;
+                // Five mini orbs on tilted orbits around a small centre orb.
+                float centerRad = radius * 0.5f;
+                KiOrbModel.render(pose, buf, centerRad, orb.color, orb.coreColor, ageTicks, partial, alpha, false, null);
+                
+                // DRAGON BALL STYLE: Center orb gets glow halos
+                KiOrbModel.renderGlowHalos(pose, buf, centerRad * 1.5f, orb.color, age, alpha * 0.7f);
+                int centerSpikes = 4 + (int)(radius * 2f);
+                KiOrbModel.renderEnergySpikes(pose, buf, centerSpikes, centerRad * 0.8f, centerRad * 1.2f, orb.color, age * 1.3f, alpha * 0.4f);
+                
+                int n = 5;
+                float ring = radius * 2.5f;
+                for (int i = 0; i < n; i++) {
+                    float ang = age * 0.28f + i * Mth.TWO_PI / n;
                     pose.pushPose();
-                    pose.translate(Mth.cos(angle) * orbitRadius, up * vertical,
-                            Mth.sin(angle) * orbitRadius);
-                    KiOrbModel.render(pose, buffer, radius * 0.34f, orb.color, orb.coreColor,
-                            ageTicks + i * 2.5f, partial, alpha * 0.88f, false, null);
+                    pose.translate(Mth.cos(ang) * ring, up * Mth.sin(ang * 0.7f + i) * ring * 0.45f, Mth.sin(ang) * ring);
+                    float orbRad = radius * 0.42f;
+                    KiOrbModel.render(pose, buf, orbRad, orb.color, orb.coreColor, ageTicks + i * 3f, partial, alpha,
+                            false, null);
+                    
+                    // DRAGON BALL STYLE: Each orbiting orb gets mini glow
+                    KiOrbModel.renderGlowHalos(pose, buf, orbRad * 1.3f, orb.color, age * 1.8f + i, alpha * 0.4f);
                     pose.popPose();
                 }
             }
             case "bomb" -> {
-                float pulse = 1.0f + 0.12f * Mth.sin(age * (0.35f + 1.1f * progress));
-                int darkCore = KiOrbModel.mix(orb.color, 0x000000, 0.82f);
-                KiOrbModel.render(pose, buffer, radius * pulse, orb.color, darkCore,
-                        ageTicks, partial, alpha, false, null);
+                // Heavy dark core, shell pulsing faster as the charge builds.
+                float p = Mth.clamp(orb.progress(elapsed), 0f, 1f);
+                float pulse = 1f + 0.14f * Mth.sin(age * (0.35f + 1.1f * p));
+                int dark = KiOrbModel.mix(orb.color, 0x000000, 0.85f);
+                float bombRad = radius * pulse;
+                KiOrbModel.render(pose, buf, bombRad, orb.color, dark, ageTicks, partial, alpha, false, null);
+                
+                // DRAGON BALL STYLE: Bomb gets intense glow halos (building energy)
+                float bombGlowAlpha = alpha * (0.5f + 0.5f * p); // More intense as charge builds
+                KiOrbModel.renderGlowHalos(pose, buf, bombRad * 1.3f, orb.color, age * 0.8f, bombGlowAlpha);
+                // Heavy energy spikes for bomb
+                int bombSpikes = 10 + (int)(p * 8f);
+                KiOrbModel.renderEnergySpikes(pose, buf, bombSpikes, bombRad * 0.7f, bombRad * 1.5f, orb.color, age * (1f + p), bombGlowAlpha * 0.6f);
             }
             case "beam" -> {
-                float pulse = 1.0f + (0.04f + 0.10f * progress) * Mth.sin(age * (0.5f + 1.0f * progress));
-                KiOrbModel.render(pose, buffer, radius * pulse, orb.color, orb.coreColor,
-                        ageTicks, partial, alpha, false, null);
+                // Cupped, crackling orb: pulsing faster with charge, with short white sparks arcing off its surface.
+                float p = Mth.clamp(orb.progress(elapsed), 0f, 1f);
+                float pulse = 1f + (0.05f + 0.12f * p) * Mth.sin(age * (0.5f + 1.2f * p));
+                float beamRad = radius * pulse;
+                KiOrbModel.render(pose, buf, beamRad, orb.color, orb.coreColor, ageTicks, partial, alpha, false, null);
+                
+                // DRAGON BALL STYLE: Beam charge orb gets intense glow and crackle
+                float beamGlowAlpha = alpha * (0.4f + 0.6f * p);
+                KiOrbModel.renderGlowHalos(pose, buf, beamRad * 1.4f, orb.color, age * 1.2f, beamGlowAlpha);
+                
+                int arcs = 4 + (int) (p * 5f);
+                for (int i = 0; i < arcs; i++) {
+                    float flick = Mth.sin(age * (1.3f + 0.37f * i) + i * 2.1f);
+                    if (flick < 0.15f) continue;
+                    pose.pushPose();
+                    pose.mulPose(Axis.YP.rotationDegrees(i * 61f + age * 4f));
+                    pose.mulPose(Axis.XP.rotationDegrees(i * 37f - age * 3f));
+                    pose.translate(0.0, 0.0, beamRad * (1.25f + 0.25f * flick));
+                    KiOrbModel.renderBox(pose, buf, beamRad * 0.045f, beamRad * 0.045f, beamRad * (0.25f + 0.35f * flick),
+                            KiOrbModel.mix(orb.color, 0xFFFFFF, 0.7f), alpha * flick);
+                    pose.popPose();
+                }
+                
+                // Additional energy spikes for beam charge
+                int beamSpikes = 6 + (int)(p * 6f);
+                KiOrbModel.renderEnergySpikes(pose, buf, beamSpikes, beamRad * 0.9f, beamRad * 1.8f, orb.color, age * 1.5f, beamGlowAlpha * 0.5f);
             }
-            default -> KiOrbModel.render(pose, buffer, radius, orb.color, orb.coreColor,
-                    ageTicks, partial, alpha, false, null);
+            default -> {
+                float defaultRad = radius;
+                KiOrbModel.render(pose, buf, defaultRad, orb.color, orb.coreColor, ageTicks, partial, alpha, false, null);
+                // DRAGON BALL STYLE: Default orb also gets glow halos
+                KiOrbModel.renderGlowHalos(pose, buf, defaultRad * 1.2f, orb.color, age, alpha * 0.6f);
+                int defaultSpikes = 4 + (int)(radius * 3f);
+                KiOrbModel.renderEnergySpikes(pose, buf, defaultSpikes, defaultRad * 0.7f, defaultRad * 1.2f, orb.color, age * 1.3f, alpha * 0.4f);
+            }
         }
     }
 }

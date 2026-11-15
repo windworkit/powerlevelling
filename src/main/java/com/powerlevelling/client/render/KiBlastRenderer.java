@@ -13,7 +13,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Flying ki blast. The model itself (plasma shell, hot core, orbit bands, filament and smooth tail) lives in {@link KiOrbModel}, shared with the
+ * Flying ki blast. The model itself (core, tumbling shells, glow, cube tail) lives in {@link KiOrbModel}, shared with the
  * "ki forms in your hand" orb; this class only positions it at the entity and points the tail against the velocity.
  * All sizes scale with the synced radius, so a charged blast (bigger radius) is simply a bigger model.
  */
