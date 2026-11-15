@@ -134,7 +134,7 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
             // Neck = y=0, Waist = y=12, Feet = y=24, Head = y=-8
 
             // The new mesh renderer owns the silhouette and internal energy strands.
-            // Legacy helpers remain below temporarily for compatibility with the first-person layer.
+            // All active aura geometry is now delegated to AuraMeshRenderer.
             AuraMeshRenderer.render(poseStack, buffer, color, scale, age, ramp,
                     charging, transforming, isSSJ, isTurbo, lodTier, alphaScale);
 
