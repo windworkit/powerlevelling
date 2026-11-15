@@ -26,7 +26,7 @@ public final class KiOrbMeshRenderer {
                               boolean withTail, Vec3 tailDir) {
         if (radius <= 0.0f || alpha <= 0.001f) return;
 
-        VertexConsumer shell = buffer.getBuffer(RenderType.eyes(KiOrbModel.TEXTURE));
+        VertexConsumer shell = buffer.getBuffer(RenderType.eyes(KiOrbModel.PLASMA_TEXTURE));
         VertexConsumer glow = buffer.getBuffer(RenderType.eyes(KiOrbModel.GLOW_TEXTURE));
 
         float pulse = 1.0f + 0.055f * Mth.sin(age * 0.20f) + 0.025f * Mth.sin(age * 0.47f + 1.1f);

@@ -28,6 +28,10 @@ public final class KiOrbModel {
     public static final ResourceLocation GLOW_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(PowerLevelling.MODID, "textures/entity/ki_glow.png");
 
+    /** Wrapped UV plasma surface for the new spherical orb mesh. */
+    public static final ResourceLocation PLASMA_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(PowerLevelling.MODID, "textures/entity/ki_plasma_shell.png");
+
     /** Per-face brightness for the remaining faceted disc geometry. */
     private static final float[] FACE_SHADE = {0.85f, 0.70f, 1.00f, 0.55f, 0.90f, 0.75f};
 
