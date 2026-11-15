@@ -17,7 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 public final class AuraMeshRenderer {
     private static final ResourceLocation RIBBON_TEXTURE = ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/energy_ribbon.png");
     private static final RenderType ENERGY = RenderType.eyes(RIBBON_TEXTURE);
-    private static final RenderType PRESSURE = RenderType.eyes(KiOrbModel.GLOW_TEXTURE);
+    private static final RenderType PRESSURE = RenderType.eyes(
+            ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_ground.png"));
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
 
@@ -30,24 +31,31 @@ public final class AuraMeshRenderer {
                               int lodTier, float opacity) {
         if (opacity <= 0.001f) return;
 
-        float output = superSaiyan ? 1.0f : charging || transforming ? 0.34f + charge * 0.66f : 0.30f;
-        if (turbo) output *= 1.16f;
-        output *= Mth.clamp(opacity, 0.0f, 1.5f);
+        // State intensity is deliberately distinct: stance is restrained, while charge,
+        // transformation, SSJ and turbo each produce a clearly readable energy envelope.
+        float stateStrength = superSaiyan ? 1.0f
+                : transforming ? 0.92f + 0.18f * charge
+                : charging ? 0.72f + 0.28f * charge
+                : turbo ? 0.84f : 0.48f;
+        if (turbo) stateStrength *= 1.12f;
+        float output = stateStrength * Mth.clamp(opacity, 0.0f, 1.5f);
 
-        float height = superSaiyan ? 42.0f : 30.0f + 9.0f * charge;
-        if (transforming) height += 5.0f * (0.5f + 0.5f * Mth.sin(age * 0.32f));
+        // These dimensions are in player-model pixels. The previous 1-3 px radius
+        // hugged the skin and made the new aura almost impossible to distinguish.
+        float height = superSaiyan ? 44.0f : 36.0f + 12.0f * charge;
+        if (transforming) height += 6.0f * (0.5f + 0.5f * Mth.sin(age * 0.32f));
         if (turbo) height += 4.0f;
-        if (!charging && !transforming && !superSaiyan && !turbo) height = 25.0f;
+        if (!charging && !transforming && !superSaiyan && !turbo) height = 34.0f;
 
-        float radius = (superSaiyan ? 3.45f : 2.9f + 0.75f * charge) * scale;
-        float width = (superSaiyan ? 1.65f : 1.22f + 0.28f * charge) * scale;
+        float radius = (superSaiyan ? 6.4f : 5.2f + 1.2f * charge) * scale;
+        float width = (superSaiyan ? 2.15f : 1.85f + 0.35f * charge) * scale;
         if (turbo) {
             radius *= 1.14f;
             width *= 1.12f;
         }
 
         VertexConsumer mesh = buffers.getBuffer(ENERGY);
-        int mainCount = superSaiyan ? 8 : charging || transforming ? 6 : 4;
+        int mainCount = superSaiyan ? 9 : charging || transforming ? 8 : 6;
         int filamentCount = lodTier >= 2 ? 4 : lodTier == 1 ? 7 : 11;
         if (turbo) mainCount += 2;
         if (lodTier >= 2) {
@@ -62,15 +70,16 @@ public final class AuraMeshRenderer {
             float h = height * (0.72f + 0.25f * (0.5f + 0.5f * Mth.sin(seed * 2.1f)));
             float w = width * (0.78f + 0.34f * (0.5f + 0.5f * Mth.sin(seed * 3.7f)));
             float drift = 0.11f + 0.035f * Mth.sin(seed * 4.3f);
-            float alpha = output * (superSaiyan ? 0.27f : 0.20f);
+            float alpha = output * (superSaiyan ? 0.78f
+                    : charging || transforming ? 0.72f : turbo ? 0.68f : 0.58f);
             drawFlame(mesh, poseStack.last(), rgb, angle, radius, h, w, drift,
-                    age, seed, alpha * 1.55f, 1.0f, 0.70f, scale);
+                    age, seed, alpha * 1.15f, 1.0f, 0.70f, scale);
 
             // Hot inner filament. Kept narrow so the player remains readable through the aura.
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, superSaiyan ? 0.56f : 0.40f),
                     angle + 0.035f, radius * 0.985f, h * 0.91f, w * 0.25f,
                     drift * 0.62f, age * 1.13f, seed + 1.8f,
-                    alpha * 0.92f, 0.34f, 0.82f, scale);
+                    alpha * 0.82f, 0.34f, 0.82f, scale);
         }
 
         // Shorter, faster strands animate inside the silhouette; they are not a cloud of orbiting sprites.
@@ -82,15 +91,15 @@ public final class AuraMeshRenderer {
             float w = width * (0.20f + 0.05f * Mth.sin(seed * 2.0f));
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, 0.30f),
                     angle, r, h, w, 0.22f, age * 1.34f, seed + 3.2f,
-                    output * 0.20f, 0.18f, 0.92f, scale);
+                    output * 0.32f, 0.18f, 0.92f, scale);
         }
 
         // A restrained pressure halo appears only as output rises; it sits at boot level.
         if (charging || transforming || superSaiyan || turbo) {
             float pulse = 0.92f + 0.08f * Mth.sin(age * 0.18f);
             VertexConsumer pressure = buffers.getBuffer(PRESSURE);
-            drawPressureRing(pressure, poseStack.last(), rgb, (4.25f + 1.15f * charge) * scale * pulse,
-                    22.9f * scale, output * (transforming ? 0.16f : 0.10f));
+            drawPressureRing(pressure, poseStack.last(), rgb, (6.2f + 1.8f * charge) * scale * pulse,
+                    22.9f * scale, output * (transforming ? 0.30f : charging ? 0.26f : turbo ? 0.25f : 0.20f));
         }
     }
 

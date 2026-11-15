@@ -5,9 +5,7 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.powerlevelling.character.CharacterRegistries;
 import com.powerlevelling.character.CharacterSnapshot;
-import com.powerlevelling.character.CosmeticPart;
 import com.powerlevelling.client.ClientCharacters;
 import com.powerlevelling.client.ClientVisualState;
 import com.powerlevelling.config.ClientConfig;
@@ -25,7 +23,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
 
 /**
  * Dragon Ball style aura renderer: flowing energy wisp columns surging upwards from the feet,
@@ -40,8 +37,6 @@ import net.minecraft.world.entity.EquipmentSlot;
  * - y = -8.0: Top of head
  */
 public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-
-    static final ResourceLocation AURA_PART_ID = ResourceLocation.fromNamespaceAndPath("powerlevelling", "aura");
 
     static final RenderType WISP_RENDER_TYPE = RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_wisp.png"));
     static final RenderType GROUND_RENDER_TYPE = RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_ground.png"));
@@ -71,26 +66,15 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
         boolean isTurbo = ClientVisualState.has(player.getId(), VisualStatePayload.TURBO);
         if (!inStance && !charging && !isSSJ && !transforming && !isTurbo) return;
 
-        CosmeticPart part = CharacterRegistries.getPart(player.level().registryAccess(), AURA_PART_ID);
-        if (part == null) return;
-        if (!player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-            CosmeticPart.HelmetMode mode = switch (ClientConfig.HAIR_WITH_HELMET.get()) {
-                case ALWAYS_HIDE -> CosmeticPart.HelmetMode.HIDE;
-                case ALWAYS_SHOW -> CosmeticPart.HelmetMode.SHOW;
-                case RESPECT_PART -> part.helmet();
-            };
-            if (mode == CosmeticPart.HelmetMode.HIDE) return;
-            if (mode == CosmeticPart.HelmetMode.PARTIAL && part.helmetVisibleBones().isEmpty()) return;
-        }
-
         int auraColor;
         if (isSSJ) {
             auraColor = 0xFFD700;
         } else {
-            auraColor = snap.kiColor();
-            if (auraColor == -1) auraColor = 0xFF0000;
+            // Prefer the character's aura color; fall back to ki color, then the project default.
+            auraColor = snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor();
+            if (auraColor < 0) auraColor = 0xFF0000;
         }
-        int color = part.tintable() ? 0xFF000000 | auraColor : 0xFFFFFFFF;
+        int color = 0xFF000000 | (auraColor & 0xFFFFFF);
 
         ClientVisualState.State st = ClientVisualState.get(player.getId());
         float chargeTicks = st != null ? st.chargeTicks : 0f;
@@ -125,7 +109,8 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
         }
 
         PlayerModel<AbstractClientPlayer> model = getParentModel();
-        ModelPart anchor = part.anchor() == CosmeticPart.Anchor.BODY ? model.body : model.head;
+        // Aura is a body-space visual effect, not an equipped cosmetic part.
+        ModelPart anchor = model.body;
 
         poseStack.pushPose();
         try {

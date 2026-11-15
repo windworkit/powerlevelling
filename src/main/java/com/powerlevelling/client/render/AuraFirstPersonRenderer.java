@@ -58,21 +58,24 @@ public final class AuraFirstPersonRenderer {
         ClientVisualState.State st = ClientVisualState.get(player.getId());
         float chargeTicks = st != null ? st.chargeTicks : 0f;
         boolean intense = charging || transforming;
-        int ramp = (intense || isTurbo) ? Mth.clamp((int)chargeTicks / 40, 0, 100) : 0;
+        float ramp = (intense || isTurbo) ? Mth.clamp(chargeTicks / 40.0f, 0.0f, 1.0f) : 0.0f;
 
         int auraColor;
         if (isSSJ) {
             auraColor = 0xFFD700;
         } else {
-            auraColor = snap.kiColor();
-            if (auraColor == -1) auraColor = 0xFF0000;
+            auraColor = snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor();
+            if (auraColor < 0) auraColor = 0xFF0000;
         }
 
         float age = player.tickCount + event.getPartialTick();
         float configScale = ClientConfig.AURA_SCALE.get().floatValue();
         float turboMult = isTurbo ? ClientConfig.TURBO_AURA_SCALE_MULT.get().floatValue() : 1f;
-        // Aura strength 0..1: quiet in stance, loud while charging, amplified by turbo.
-        float strength = (intense ? 0.45f + 0.55f * ramp / 100f : isSSJ ? 0.7f : 0.3f) * turboMult;
+        // Keep first-person effects at the edge of the view while giving charge,
+        // transformation, SSJ and turbo distinct levels of presence.
+        float strength = (transforming ? 0.82f + 0.18f * ramp
+                : charging ? 0.68f + 0.26f * ramp
+                : isSSJ ? 0.82f : isTurbo ? 0.78f : 0.34f) * turboMult;
         strength *= Mth.clamp(configScale, 0.1f, 2f);
 
         PoseStack pose = event.getPoseStack();
