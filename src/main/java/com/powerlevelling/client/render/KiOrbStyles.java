@@ -13,8 +13,7 @@ import net.minecraft.util.Mth;
  * bomb (pulsing dark-cored orb). Shared by the third-person layer ({@link KiOrbLayer}) and the first-person hand
  * ({@link KiOrbHandRenderer}); everything is drawn around the current pose origin.
  * <p>
- * DRAGON BALL STYLE: All orb variants now feature camera-independent radial glow halos and energy spikes/crackle
- * for that signature Dragon Ball "unstable energy" look.
+ * The base orb is a continuous mesh with its own integrated surface bands and energy filament.
  */
 public final class KiOrbStyles {
     private KiOrbStyles() {
@@ -38,10 +37,8 @@ public final class KiOrbStyles {
                 
                 // DRAGON BALL STYLE: Add glow halos to disc (flat but still gets spherical glow)
                 float discRadius = radius * 1.6f;
-                KiOrbModel.renderGlowHalos(pose, buf, discRadius * 0.9f, orb.color, age * 1.5f, alpha * 0.6f);
                 // Energy crackle around disc edge
                 int discSpikes = 8 + (int)(radius * 4f);
-                KiOrbModel.renderEnergySpikes(pose, buf, discSpikes, discRadius * 0.6f, discRadius * 0.8f, orb.color, age * 2f, alpha * 0.5f);
                 pose.popPose();
             }
             case "barrage" -> {
@@ -56,7 +53,6 @@ public final class KiOrbStyles {
                             partial, alpha, false, null);
                     
                     // DRAGON BALL STYLE: Each barrage orb gets mini glow halos
-                    KiOrbModel.renderGlowHalos(pose, buf, orbRad * 1.2f, orb.color, age * (2f + side * 0.3f), alpha * 0.5f);
                     pose.popPose();
                 }
             }
@@ -66,9 +62,7 @@ public final class KiOrbStyles {
                 KiOrbModel.render(pose, buf, centerRad, orb.color, orb.coreColor, ageTicks, partial, alpha, false, null);
                 
                 // DRAGON BALL STYLE: Center orb gets glow halos
-                KiOrbModel.renderGlowHalos(pose, buf, centerRad * 1.5f, orb.color, age, alpha * 0.7f);
                 int centerSpikes = 4 + (int)(radius * 2f);
-                KiOrbModel.renderEnergySpikes(pose, buf, centerSpikes, centerRad * 0.8f, centerRad * 1.2f, orb.color, age * 1.3f, alpha * 0.4f);
                 
                 int n = 5;
                 float ring = radius * 2.5f;
@@ -81,7 +75,6 @@ public final class KiOrbStyles {
                             false, null);
                     
                     // DRAGON BALL STYLE: Each orbiting orb gets mini glow
-                    KiOrbModel.renderGlowHalos(pose, buf, orbRad * 1.3f, orb.color, age * 1.8f + i, alpha * 0.4f);
                     pose.popPose();
                 }
             }
@@ -95,10 +88,8 @@ public final class KiOrbStyles {
                 
                 // DRAGON BALL STYLE: Bomb gets intense glow halos (building energy)
                 float bombGlowAlpha = alpha * (0.5f + 0.5f * p); // More intense as charge builds
-                KiOrbModel.renderGlowHalos(pose, buf, bombRad * 1.3f, orb.color, age * 0.8f, bombGlowAlpha);
                 // Heavy energy spikes for bomb
                 int bombSpikes = 10 + (int)(p * 8f);
-                KiOrbModel.renderEnergySpikes(pose, buf, bombSpikes, bombRad * 0.7f, bombRad * 1.5f, orb.color, age * (1f + p), bombGlowAlpha * 0.6f);
             }
             case "beam" -> {
                 // Cupped, crackling orb: pulsing faster with charge, with short white sparks arcing off its surface.
@@ -109,7 +100,6 @@ public final class KiOrbStyles {
                 
                 // DRAGON BALL STYLE: Beam charge orb gets intense glow and crackle
                 float beamGlowAlpha = alpha * (0.4f + 0.6f * p);
-                KiOrbModel.renderGlowHalos(pose, buf, beamRad * 1.4f, orb.color, age * 1.2f, beamGlowAlpha);
                 
                 int arcs = 4 + (int) (p * 5f);
                 for (int i = 0; i < arcs; i++) {
@@ -126,15 +116,12 @@ public final class KiOrbStyles {
                 
                 // Additional energy spikes for beam charge
                 int beamSpikes = 6 + (int)(p * 6f);
-                KiOrbModel.renderEnergySpikes(pose, buf, beamSpikes, beamRad * 0.9f, beamRad * 1.8f, orb.color, age * 1.5f, beamGlowAlpha * 0.5f);
             }
             default -> {
                 float defaultRad = radius;
                 KiOrbModel.render(pose, buf, defaultRad, orb.color, orb.coreColor, ageTicks, partial, alpha, false, null);
                 // DRAGON BALL STYLE: Default orb also gets glow halos
-                KiOrbModel.renderGlowHalos(pose, buf, defaultRad * 1.2f, orb.color, age, alpha * 0.6f);
                 int defaultSpikes = 4 + (int)(radius * 3f);
-                KiOrbModel.renderEnergySpikes(pose, buf, defaultSpikes, defaultRad * 0.7f, defaultRad * 1.2f, orb.color, age * 1.3f, alpha * 0.4f);
             }
         }
     }

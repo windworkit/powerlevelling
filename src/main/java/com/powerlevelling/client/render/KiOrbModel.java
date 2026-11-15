@@ -93,61 +93,13 @@ public final class KiOrbModel {
      * @param tailDir     direction the tail trails towards (i.e. opposite to the travel direction), in the current pose's
      *                    axes; ignored when withTail is false or the vector is ~zero
      */
+    /**
+     * Draws the shared hand-orb / travelling-blast model. Geometry is emitted by KiOrbMeshRenderer.
+     */
     public static void render(PoseStack poseStack, MultiBufferSource buffer, float radius, int color, int coreColor,
                               float ageTicks, float partialTick, float alphaMul, boolean withTail, Vec3 tailDir) {
-        if (radius <= 0f || alphaMul <= 0f) return;
-        final float diameter = radius * 2f;
-        final float age = ageTicks + partialTick;
-        final float pulse = 1f + PULSE_AMOUNT * Mth.sin(age * PULSE_RAD_PER_TICK);
-        final int light = LightTexture.FULL_BRIGHT;
-
-        // 1) Core, solid and full-bright (opaque, so it writes depth and hides whatever is behind it).
-        poseStack.pushPose();
-        spin(poseStack, age, 4f, 7f, 3f);
-        float coreHalf = diameter * CORE_EDGE * 0.5f * pulse;
-        cube(buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), poseStack.last(), coreHalf, coreColor,
-                alpha(1f * alphaMul), light, false);
-        poseStack.popPose();
-
-        // 2) Everything else is additive (order independent). One RenderType, so the buffer is only switched once.
-        VertexConsumer glow = buffer.getBuffer(RenderType.eyes(TEXTURE));
-
-        // Faint additive overlay on the core: lifts the darker faces so the core looks self-lit.
-        poseStack.pushPose();
-        spin(poseStack, age, 4f, 7f, 3f);
-        cube(glow, poseStack.last(), coreHalf * 1.04f, coreColor, alpha(CORE_GLOW_ALPHA * alphaMul), light, true);
-        poseStack.popPose();
-
-        // Inner shell, then outer shell (inner to outer), tumbling on different axes at different speeds.
-        poseStack.pushPose();
-        spin(poseStack, age, -9f, 5f, 2f);
-        cube(glow, poseStack.last(), diameter * SHELL_INNER_EDGE * 0.5f * pulse, color, alpha(SHELL_INNER_ALPHA * alphaMul), light, true);
-        poseStack.popPose();
-
-        poseStack.pushPose();
-        spin(poseStack, age, 3f, -4f, 6f);
-        cube(glow, poseStack.last(), diameter * SHELL_OUTER_EDGE * 0.5f * pulse, color, alpha(SHELL_OUTER_ALPHA * alphaMul), light, true);
-        poseStack.popPose();
-
-        // Outer glow: one big, barely-there cube, turning slowly.
-        poseStack.pushPose();
-        spin(poseStack, age, 1.5f, -2f, 1f);
-        cube(glow, poseStack.last(), diameter * GLOW_EDGE * 0.5f * pulse, color, alpha(GLOW_ALPHA * alphaMul), light, true);
-        poseStack.popPose();
-
-        // 3) DRAGON BALL STYLE: Camera-independent radial glow halos (soft spherical glow)
-        // Using 3 orthogonal quads with the radial glow texture for a spherical look from any angle
-        renderGlowHalos(poseStack, buffer, diameter * 0.85f, color, age, alphaMul * 0.9f);
-
-        // 4) DRAGON BALL STYLE: Energy spikes/crackle emanating from the core
-        // Number of spikes scales with radius for bigger blasts
-        int spikeCount = 6 + (int) (radius * 6f);
-        renderEnergySpikes(poseStack, buffer, spikeCount, diameter * 0.55f, diameter * 0.7f, color, age, alphaMul * 0.7f);
-
-        // 5) Tail: smoother comet tail with soft quads instead of discrete cubes (Dragon Ball style energy trail)
-        if (withTail && tailDir != null && tailDir.lengthSqr() > 1.0E-6) {
-            renderSmoothTail(poseStack, buffer, radius, color, coreColor, tailDir, age, alphaMul);
-        }
+        KiOrbMeshRenderer.render(poseStack, buffer, radius, color, coreColor,
+                ageTicks + partialTick, alphaMul, withTail, tailDir);
     }
 
     /**
