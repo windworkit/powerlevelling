@@ -211,10 +211,10 @@ public final class AuraMeshRenderer {
         vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 0.5f, r, g, bl, alpha, b.nx, b.ny, b.nz);
 
         // Reverse winding too: the energy ribbon is visible from every camera angle.
-        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 1.0f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
-        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 1.0f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
-        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.0f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
-        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.0f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
+        vertex(vc, pose, b.x - b.wx, b.y, b.z - b.wz, 0.0f, 0.5f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
+        vertex(vc, pose, b.x + b.wx, b.y, b.z + b.wz, 1.0f, 0.5f, r, g, bl, alpha, -b.nx, -b.ny, -b.nz);
+        vertex(vc, pose, a.x + a.wx, a.y, a.z + a.wz, 1.0f, 0.5f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
+        vertex(vc, pose, a.x - a.wx, a.y, a.z - a.wz, 0.0f, 0.5f, r, g, bl, alpha, -a.nx, -a.ny, -a.nz);
     }
 
     private static void drawPressureRing(VertexConsumer vc, PoseStack.Pose pose, int rgb,
