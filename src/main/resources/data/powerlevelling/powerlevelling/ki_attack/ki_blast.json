@@ -1,0 +1,18 @@
+{
+  "type": "powerlevelling:blast",
+  "name": "attack.powerlevelling.ki_blast",
+  "cost": { "base": 30 },
+  "damage": { "base": 6.0 },
+  "projectile": { "speed": 2.0, "radius": [0.3, 0.3], "range": 48, "lifetime": 100 },
+  "windup_ticks": 5,
+  "cooldown": 5,
+  "knockback": 0.5,
+  "block_damage": false,
+  "visual": {
+    "color": "#4FC3FF",
+    "core_color": "#FFFFFF",
+    "fire_sound": "powerlevelling:ki_blast_fire",
+    "impact_sound": "powerlevelling:ki_impact",
+    "impact_particle": "powerlevelling:ki_spark"
+  }
+}

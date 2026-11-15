@@ -1,0 +1,9 @@
+{
+  "slot": "tail",
+  "name": "part.powerlevelling.frost_tail",
+  "model": "powerlevelling:tail/frost_tail",
+  "texture": "powerlevelling:textures/entity/tail/frost_tail.png",
+  "tintable": true,
+  "anchor": "body",
+  "helmet": "show"
+}

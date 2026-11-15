@@ -1,0 +1,10 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.long_mane",
+  "model": "powerlevelling:hair/long_mane",
+  "texture": "powerlevelling:textures/entity/hair/long_mane.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "partial",
+  "helmet_visible_bones": ["back"]
+}

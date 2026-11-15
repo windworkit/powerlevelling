@@ -1,0 +1,14 @@
+{
+  "display": {
+    "id": "minecraft:blaze_powder",
+    "title": { "translate": "advancement.powerlevelling.first_ki_charge.title" },
+    "description": { "translate": "advancement.powerlevelling.first_ki_charge.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "first_charge": { "trigger": "minecraft:impossible" }
+  }
+}

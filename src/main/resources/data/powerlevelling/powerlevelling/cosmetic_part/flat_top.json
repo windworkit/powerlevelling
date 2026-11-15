@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.flat_top",
+  "model": "powerlevelling:hair/flat_top",
+  "texture": "powerlevelling:textures/entity/hair/flat_top.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:reincarnation_orb" },
+    "title": { "translate": "advancement.powerlevelling.reborn.title" },
+    "description": { "translate": "advancement.powerlevelling.reborn.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "has_reincarnation_orb": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": [ "powerlevelling:reincarnation_orb" ] }
+        ]
+      }
+    }
+  }
+}

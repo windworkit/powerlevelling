@@ -1,0 +1,26 @@
+{
+  "startup": 3,
+  "active": 2,
+  "recovery": 8,
+  "cancel_from": 2,
+  "damage": 3.5,
+  "hitstun": 13,
+  "hitbox": {
+    "reach": 3.0,
+    "width": 1.8,
+    "height": 2.0
+  },
+  "knockback": {
+    "forward": 0.2,
+    "up": 0.0
+  },
+  "stamina_cost": 0,
+  "pose": "powerlevelling:hook_r",
+  "sounds": {
+    "swing": "powerlevelling:melee_swing",
+    "hit": "powerlevelling:melee_hit"
+  },
+  "follow_ups": {
+    "light": "powerlevelling:light_4"
+  }
+}

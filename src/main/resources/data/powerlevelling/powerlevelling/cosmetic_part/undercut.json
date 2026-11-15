@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.undercut",
+  "model": "powerlevelling:hair/undercut",
+  "texture": "powerlevelling:textures/entity/hair/undercut.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

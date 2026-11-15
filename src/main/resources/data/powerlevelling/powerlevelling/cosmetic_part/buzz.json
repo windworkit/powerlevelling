@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.buzz",
+  "model": "powerlevelling:hair/buzz",
+  "texture": "powerlevelling:textures/entity/hair/buzz.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

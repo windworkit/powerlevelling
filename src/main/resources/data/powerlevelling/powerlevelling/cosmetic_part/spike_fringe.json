@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.spike_fringe",
+  "model": "powerlevelling:hair/spike_fringe",
+  "texture": "powerlevelling:textures/entity/hair/spike_fringe.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

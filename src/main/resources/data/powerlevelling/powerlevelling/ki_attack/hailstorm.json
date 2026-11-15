@@ -1,0 +1,66 @@
+{
+  "type": "powerlevelling:barrage",
+  "name": "attack.powerlevelling.hailstorm",
+  "description": "attack.powerlevelling.hailstorm.desc",
+  "cost": {
+    "base": 10,
+    "per_shot": 8
+  },
+  "input": {
+    "mode": "hold_stream",
+    "windup_ticks": 6,
+    "move_speed_mult": 0.6,
+    "recovery_ticks": 10
+  },
+  "damage": {
+    "base": 2.2
+  },
+  "guard": {
+    "mult": 1.0,
+    "deflect": "always"
+  },
+  "projectile": {
+    "speed": 2.6,
+    "radius": [
+      0.18,
+      0.18
+    ],
+    "range": 40,
+    "lifetime": 40
+  },
+  "cooldown": 60,
+  "knockback": 0.1,
+  "block_damage": false,
+  "barrage": {
+    "interval": 3,
+    "start_interval": 6,
+    "ramp_shots": 8,
+    "max_shots": 30,
+    "spread": 4,
+    "alternate_hands": true,
+    "cap_weight": 0.5,
+    "diminish_step": 0.12,
+    "diminish_min": 0.5
+  },
+  "present": {
+    "shape": "barrage",
+    "color": "#FFD84A",
+    "core_color": "#FFFFFF",
+    "color_source": "player",
+    "trail": "ribbon",
+    "impact": "spark_small",
+    "shake": 0.05,
+    "hitstop": 1,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:barrage_alternate", "fire": "powerlevelling:barrage_alternate" },
+    "orb": {
+      "hand": "both",
+      "anchor": "chest",
+      "spin": 0
+    },
+    "sounds": {
+      "fire": "powerlevelling:barrage_shot",
+      "impact": "powerlevelling:ki_impact_small"
+    }
+  }
+}

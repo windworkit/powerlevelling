@@ -1,0 +1,9 @@
+{
+  "name": "ki_nature.powerlevelling.balanced",
+  "description": "ki_nature.powerlevelling.balanced.desc",
+  "sort": 0,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "mastery_xp": 1.10, "exp_gain": 1.05 }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "display": {
+    "icon": { "id": "minecraft:nether_star" },
+    "title": { "translate": "advancement.powerlevelling.mastery_max.title" },
+    "description": { "translate": "advancement.powerlevelling.mastery_max.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "mastery_max": { "trigger": "minecraft:impossible" }
+  }
+}

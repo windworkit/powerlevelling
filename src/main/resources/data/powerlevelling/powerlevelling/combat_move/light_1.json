@@ -1,0 +1,30 @@
+{
+  "entry": "light",
+  "requires": "any",
+  "startup": 3,
+  "active": 2,
+  "recovery": 7,
+  "cancel_from": 2,
+  "damage": 3.0,
+  "hitstun": 12,
+  "hitbox": {
+    "reach": 3.0,
+    "width": 1.4,
+    "height": 2.0,
+    "forward": 0.0,
+    "y": 0.0
+  },
+  "knockback": {
+    "forward": 0.15,
+    "up": 0.0
+  },
+  "stamina_cost": 0,
+  "pose": "powerlevelling:jab_r",
+  "sounds": {
+    "swing": "powerlevelling:melee_swing",
+    "hit": "powerlevelling:melee_hit"
+  },
+  "follow_ups": {
+    "light": "powerlevelling:light_2"
+  }
+}

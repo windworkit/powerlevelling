@@ -1,0 +1,18 @@
+{
+  "type": "powerlevelling:blast",
+  "name": "attack.powerlevelling.piercing_shot",
+  "cost": { "base": 25 },
+  "damage": { "base": 5.0 },
+  "projectile": { "speed": 3.5, "radius": [0.12, 0.12], "range": 64, "lifetime": 120 },
+  "windup_ticks": 6,
+  "cooldown": 12,
+  "knockback": 0.2,
+  "block_damage": false,
+  "visual": {
+    "color": "#E0E0FF",
+    "core_color": "#FFFFFF",
+    "fire_sound": "powerlevelling:ki_blast_fire",
+    "impact_sound": "powerlevelling:ki_impact",
+    "impact_particle": "powerlevelling:ki_spark"
+  }
+}

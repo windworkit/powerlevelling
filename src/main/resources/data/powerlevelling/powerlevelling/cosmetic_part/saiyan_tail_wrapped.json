@@ -1,0 +1,9 @@
+{
+  "slot": "tail",
+  "name": "part.powerlevelling.saiyan_tail_wrapped",
+  "model": "powerlevelling:tail/saiyan_tail_wrapped",
+  "texture": "powerlevelling:textures/entity/tail/saiyan_tail_wrapped.png",
+  "tintable": true,
+  "anchor": "body",
+  "helmet": "show"
+}

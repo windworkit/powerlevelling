@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:attunement_crystal" },
+    "title": { "translate": "advancement.powerlevelling.unlock_attunement_crystal.title" },
+    "description": { "translate": "advancement.powerlevelling.unlock_attunement_crystal.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "has_diamond": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:diamond"] }]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": ["powerlevelling:attunement_crystal"]
+  }
+}

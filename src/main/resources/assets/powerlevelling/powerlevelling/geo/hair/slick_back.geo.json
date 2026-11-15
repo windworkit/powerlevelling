@@ -1,0 +1,121 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.powerlevelling.hair.slick_back",
+        "texture_width": 64,
+        "texture_height": 64
+      },
+      "bones": [
+        {
+          "name": "hair",
+          "pivot": [
+            0,
+            24,
+            0
+          ]
+        },
+        {
+          "name": "cap",
+          "parent": "hair",
+          "pivot": [
+            0,
+            32,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                29.1,
+                -4.5
+              ],
+              "size": [
+                9,
+                4,
+                9
+              ],
+              "uv": [
+                0,
+                0
+              ],
+              "inflate": 0.1
+            }
+          ]
+        },
+        {
+          "name": "ridge",
+          "parent": "hair",
+          "pivot": [
+            0,
+            33,
+            2
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -3,
+                33.1,
+                -1
+              ],
+              "size": [
+                6,
+                1,
+                5
+              ],
+              "uv": [
+                36,
+                7
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                34,
+                0
+              ],
+              "size": [
+                4,
+                1,
+                4
+              ],
+              "uv": [
+                0,
+                13
+              ]
+            }
+          ]
+        },
+        {
+          "name": "nape",
+          "parent": "hair",
+          "pivot": [
+            0,
+            31,
+            4.6
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -5,
+                25.6,
+                4.2
+              ],
+              "size": [
+                10,
+                6,
+                1
+              ],
+              "uv": [
+                36,
+                0
+              ],
+              "inflate": -0.4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

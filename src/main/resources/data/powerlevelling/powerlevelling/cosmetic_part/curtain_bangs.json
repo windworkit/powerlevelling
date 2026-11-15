@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.curtain_bangs",
+  "model": "powerlevelling:hair/curtain_bangs",
+  "texture": "powerlevelling:textures/entity/hair/curtain_bangs.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

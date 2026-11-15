@@ -1,0 +1,11 @@
+{
+  "name": "ki_nature.powerlevelling.bulwark",
+  "description": "ki_nature.powerlevelling.bulwark.desc",
+  "sort": 3,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "max_hp": 1.15, "ki_damage": 0.90, "ki_charge_rate": 0.90, "move_speed": 0.95 },
+    "flat": { "defense_cap": 0.05 },
+    "stat_scaling": { "defense": 1.20 }
+  }
+}

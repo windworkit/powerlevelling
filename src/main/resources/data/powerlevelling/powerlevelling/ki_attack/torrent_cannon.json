@@ -1,0 +1,52 @@
+{
+  "type": "powerlevelling:beam",
+  "name": "attack.powerlevelling.torrent_cannon",
+  "description": "attack.powerlevelling.torrent_cannon.desc",
+  "unlock_level": 20,
+  "cost": { "base": 60, "per_charge_tick": 3.0, "per_active_tick": 2.5 },
+  "input": {
+    "mode": "hold_charge",
+    "min_ticks": 10,
+    "max_ticks": 70,
+    "move_speed_mult": 0.35,
+    "recovery_ticks": 16,
+    "early_release": "fire"
+  },
+  "damage": { "base": 2.6, "charge_mult": [1.0, 2.4], "hit_interval": 4 },
+  "guard": { "mult": 0.5, "deflect": "never", "chip_mult": 1.5 },
+  "cooldown": 240,
+  "knockback": 0.35,
+  "block_damage": true,
+  "beam": {
+    "max_length": 48,
+    "radius": [0.45, 0.9],
+    "duration": [24, 44],
+    "turn": 3,
+    "root_caster": true,
+    "fire_move_mult": 0.1,
+    "recoil": 0.03,
+    "pierce": true,
+    "block_radius": 1.6,
+    "clash_power": 10,
+    "orb_radius": [0.2, 0.85]
+  },
+  "present": {
+    "shape": "beam",
+    "color": "#59C8FF",
+    "core_color": "#FFFFFF",
+    "color_source": "player",
+    "trail": "",
+    "impact": "",
+    "shake": 0.3,
+    "hitstop": 0,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:two_hand_hip_cup", "fire": "powerlevelling:two_hand_forward" },
+    "orb": { "hand": "both", "anchor": "hip", "spin": 0 },
+    "sounds": {
+      "charge_loop": "powerlevelling:beam_charge",
+      "fire": "powerlevelling:beam_fire",
+      "loop": "powerlevelling:beam_loop",
+      "impact": "powerlevelling:beam_impact"
+    }
+  }
+}

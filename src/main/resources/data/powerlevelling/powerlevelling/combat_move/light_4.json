@@ -1,0 +1,23 @@
+{
+  "startup": 5,
+  "active": 3,
+  "recovery": 12,
+  "cancel_from": -1,
+  "damage": 5.0,
+  "hitstun": 16,
+  "hitbox": {
+    "reach": 3.3,
+    "width": 1.6,
+    "height": 2.0
+  },
+  "knockback": {
+    "forward": 0.9,
+    "up": 0.25
+  },
+  "stamina_cost": 0,
+  "pose": "powerlevelling:kick",
+  "sounds": {
+    "swing": "powerlevelling:melee_swing",
+    "hit": "powerlevelling:melee_hit_heavy"
+  }
+}

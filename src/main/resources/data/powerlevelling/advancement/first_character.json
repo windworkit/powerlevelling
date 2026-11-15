@@ -1,0 +1,16 @@
+{
+  "display": {
+    "icon": { "id": "minecraft:character" },
+    "title": { "translate": "advancement.powerlevelling.first_character.title" },
+    "description": { "translate": "advancement.powerlevelling.first_character.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "first_character": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

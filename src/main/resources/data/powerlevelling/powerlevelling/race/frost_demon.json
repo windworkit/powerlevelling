@@ -1,0 +1,35 @@
+{
+  "name": "race.powerlevelling.frost_demon",
+  "lore": "race.powerlevelling.frost_demon.lore",
+  "icon": "powerlevelling:textures/gui/race/frost_demon.png",
+  "sort": 4,
+  "playable": false,
+  "modifiers": {
+    "mult": { "ki_damage": 1.06, "ki_cost": 1.05, "damage_taken": 0.95 }
+  },
+  "appearance": {
+    "hair": {
+      "allowed": false
+    },
+    "eyes": { "colors": "any" },
+    "tail": {
+      "mode": "forced",
+      "model": "powerlevelling:frost_tail",
+      "default_color": "#BFE6F7"
+    },
+    "parts": {
+      "slots": {
+        "horn": ["powerlevelling:horn_small"]
+      }
+    },
+    "skin": {
+      "mode": "palette",
+      "palette": ["#6F8FB8", "#4A6A96", "#A9CDE8", "#2F4766"]
+    },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false
+  }
+}

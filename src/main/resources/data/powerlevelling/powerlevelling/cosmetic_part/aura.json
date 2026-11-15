@@ -1,0 +1,9 @@
+{
+  "slot": "aura",
+  "name": "part.powerlevelling.aura",
+  "model": "powerlevelling:aura",
+  "texture": "powerlevelling:textures/entity/aura/aura.png",
+  "tintable": true,
+  "anchor": "body",
+  "helmet": "show"
+}

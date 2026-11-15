@@ -1,0 +1,10 @@
+{
+  "name": "ki_nature.powerlevelling.reservoir",
+  "description": "ki_nature.powerlevelling.reservoir.desc",
+  "sort": 1,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "max_ki": 1.10, "ki_regen": 1.15, "melee_damage": 0.90, "max_hp": 0.95 },
+    "stat_scaling": { "ki_capacity": 1.25 }
+  }
+}

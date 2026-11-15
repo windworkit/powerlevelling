@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PDP",
+    "DND",
+    "PDP"
+  ],
+  "key": {
+    "P": { "item": "minecraft:ender_pearl" },
+    "D": { "item": "minecraft:diamond" },
+    "N": { "item": "minecraft:nether_star" }
+  },
+  "result": {
+    "id": "powerlevelling:rebirth_orb",
+    "count": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "ki_nature.powerlevelling.tempest",
+  "description": "ki_nature.powerlevelling.tempest.desc",
+  "sort": 5,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "max_stamina": 1.15, "stamina_regen": 1.15, "melee_damage": 0.95, "ki_damage": 0.95, "max_hp": 0.92 },
+    "flat": { "speed_cap": 0.05 },
+    "stat_scaling": { "speed": 1.15 }
+  }
+}

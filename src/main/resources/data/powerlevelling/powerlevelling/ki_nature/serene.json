@@ -1,0 +1,9 @@
+{
+  "name": "ki_nature.powerlevelling.serene",
+  "description": "ki_nature.powerlevelling.serene.desc",
+  "sort": 6,
+  "enabled": false,
+  "modifiers": {
+    "mult": { "ki_regen": 1.35, "ki_charge_rate": 1.25, "ki_cost": 0.92, "ki_damage": 0.90, "melee_damage": 0.95 }
+  }
+}

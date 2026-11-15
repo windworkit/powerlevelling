@@ -1,0 +1,17 @@
+{
+  "display": {
+    "icon": { "id": "minecraft:nether_star" },
+    "title": { "translate": "advancement.powerlevelling.level_50.title" },
+    "description": { "translate": "advancement.powerlevelling.level_50.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "level_50": { "trigger": "minecraft:impossible" }
+  },
+  "rewards": {
+    "recipes": ["powerlevelling:reincarnation_orb"]
+  }
+}

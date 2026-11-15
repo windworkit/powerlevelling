@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.windswept",
+  "model": "powerlevelling:hair/windswept",
+  "texture": "powerlevelling:textures/entity/hair/windswept.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

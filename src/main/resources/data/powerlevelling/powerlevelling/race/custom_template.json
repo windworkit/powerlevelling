@@ -1,0 +1,49 @@
+{
+  "name": "race.powerlevelling.custom_template",
+  "lore": "race.powerlevelling.custom_template.lore",
+  "icon": "powerlevelling:textures/gui/race/custom_template.png",
+  "sort": 99,
+  "playable": false,
+  "hidden": true,
+  "modifiers": {
+    "mult": { "melee_damage": 1.0, "ki_damage": 1.0, "max_hp": 1.0 },
+    "flat": { "max_hp": 0.0, "defense_cap": 0.0 },
+    "stat_scaling": { "strength": 1.0 }
+  },
+  "zenkai": { "bonus_points": 0, "cooldown_mult": 1.0, "exp_bonus_mult": 1.0 },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": ["powerlevelling:flare", "powerlevelling:buzz"],
+      "default_style": "powerlevelling:flare",
+      "colors": ["#1A1A1A", "#4B2E1A"],
+      "suggested_colors": ["#1A1A1A"]
+    },
+    "eyes": {
+      "colors": "any",
+      "suggested_colors": ["#4FC3FF"]
+    },
+    "tail": {
+      "mode": "optional",
+      "default": false,
+      "model": "powerlevelling:saiyan_tail",
+      "default_color": "hair"
+    },
+    "parts": {
+      "slots": {
+        "antenna": ["powerlevelling:antenna_short"]
+      }
+    },
+    "skin": {
+      "mode": "palette",
+      "palette": ["#C68642"]
+    },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false,
+    "forms": ["powerlevelling:super_saiyan"],
+    "base_form": "powerlevelling:base"
+  }
+}

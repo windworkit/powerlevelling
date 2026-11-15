@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.slick_back",
+  "model": "powerlevelling:hair/slick_back",
+  "texture": "powerlevelling:textures/entity/hair/slick_back.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

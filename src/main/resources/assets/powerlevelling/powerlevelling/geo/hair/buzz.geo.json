@@ -1,0 +1,112 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.powerlevelling.hair.buzz",
+        "texture_width": 64,
+        "texture_height": 64
+      },
+      "bones": [
+        {
+          "name": "hair",
+          "pivot": [
+            0,
+            24,
+            0
+          ]
+        },
+        {
+          "name": "cap",
+          "parent": "hair",
+          "pivot": [
+            0,
+            32,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                29.1,
+                -4.5
+              ],
+              "size": [
+                9,
+                4,
+                9
+              ],
+              "uv": [
+                0,
+                0
+              ],
+              "inflate": 0.1
+            }
+          ]
+        },
+        {
+          "name": "nape",
+          "parent": "hair",
+          "pivot": [
+            0,
+            28,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -5,
+                27.45,
+                4.1
+              ],
+              "size": [
+                10,
+                2,
+                1
+              ],
+              "uv": [
+                0,
+                13
+              ],
+              "inflate": -0.45
+            },
+            {
+              "origin": [
+                4.1,
+                27.45,
+                -3
+              ],
+              "size": [
+                1,
+                2,
+                8
+              ],
+              "uv": [
+                36,
+                0
+              ],
+              "inflate": -0.45
+            },
+            {
+              "origin": [
+                -5.1,
+                27.45,
+                -3
+              ],
+              "size": [
+                1,
+                2,
+                8
+              ],
+              "uv": [
+                36,
+                10
+              ],
+              "inflate": -0.45
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

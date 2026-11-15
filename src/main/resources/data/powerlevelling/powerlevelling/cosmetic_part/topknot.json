@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.topknot",
+  "model": "powerlevelling:hair/topknot",
+  "texture": "powerlevelling:textures/entity/hair/topknot.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

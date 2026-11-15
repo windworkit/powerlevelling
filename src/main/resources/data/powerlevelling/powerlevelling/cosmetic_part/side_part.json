@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.side_part",
+  "model": "powerlevelling:hair/side_part",
+  "texture": "powerlevelling:textures/entity/hair/side_part.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

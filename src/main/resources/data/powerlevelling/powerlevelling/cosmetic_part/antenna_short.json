@@ -1,0 +1,9 @@
+{
+  "slot": "antenna",
+  "name": "part.powerlevelling.antenna_short",
+  "model": "powerlevelling:antenna/antenna_short",
+  "texture": "powerlevelling:textures/entity/antenna/antenna_short.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

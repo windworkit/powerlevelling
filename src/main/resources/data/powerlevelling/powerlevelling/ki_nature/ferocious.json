@@ -1,0 +1,10 @@
+{
+  "name": "ki_nature.powerlevelling.ferocious",
+  "description": "ki_nature.powerlevelling.ferocious.desc",
+  "sort": 4,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "melee_damage": 1.12, "ki_damage": 0.85, "max_ki": 0.90, "stamina_regen": 1.10 },
+    "stat_scaling": { "strength": 1.10 }
+  }
+}

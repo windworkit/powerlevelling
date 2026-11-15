@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.flare",
+  "model": "powerlevelling:hair/flare",
+  "texture": "powerlevelling:textures/entity/hair/flare.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

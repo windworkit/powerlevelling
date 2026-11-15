@@ -1,0 +1,31 @@
+{
+  "type": "powerlevelling:needle",
+  "name": "attack.powerlevelling.pinpoint_lance",
+  "description": "attack.powerlevelling.pinpoint_lance.desc",
+  "cost": { "base": 60 },
+  "input": { "mode": "tap", "windup_ticks": 8 },
+  "damage": { "base": 10.0 },
+  "guard": { "mult": 0.6, "deflect": "never" },
+  "cooldown": 30,
+  "knockback": 0.0,
+  "block_damage": false,
+  "needle": { "range": 40, "pierce": 3, "pierce_mult": [1.0, 0.75, 0.5], "aim_ticks": 4, "width": 0.1 },
+  "present": {
+    "shape": "needle",
+    "color": "#9FE8FF",
+    "core_color": "#FFFFFF",
+    "color_source": "player",
+    "trail": "trace_line",
+    "impact": "pierce",
+    "shake": 0.2,
+    "hitstop": 3,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:finger_point", "fire": "powerlevelling:finger_point" },
+    "orb": { "hand": "finger", "anchor": "fingertip", "spin": 0 },
+    "sounds": {
+      "charge_loop": "powerlevelling:needle_charge",
+      "fire": "powerlevelling:needle_fire",
+      "impact": "powerlevelling:ki_impact"
+    }
+  }
+}

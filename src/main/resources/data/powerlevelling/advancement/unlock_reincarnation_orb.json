@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:reincarnation_orb" },
+    "title": { "translate": "advancement.powerlevelling.unlock_reincarnation_orb.title" },
+    "description": { "translate": "advancement.powerlevelling.unlock_reincarnation_orb.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "has_nether_star": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:nether_star"] }]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": ["powerlevelling:reincarnation_orb"]
+  }
+}

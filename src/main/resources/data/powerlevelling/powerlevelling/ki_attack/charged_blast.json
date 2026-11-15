@@ -1,0 +1,19 @@
+{
+  "type": "powerlevelling:charged_blast",
+  "name": "attack.powerlevelling.charged_blast",
+  "cost": { "base": 30, "per_charge_tick": 4 },
+  "charge": { "min_ticks": 4, "max_ticks": 30, "move_speed_mult": 0.5 },
+  "damage": { "base": 6.0, "charge_mult": [1.0, 3.5] },
+  "projectile": { "speed": 1.6, "radius": [0.3, 1.0], "range": 48, "lifetime": 100 },
+  "explosion": { "radius": 2.5 },
+  "cooldown": 20,
+  "knockback": 0.8,
+  "block_damage": false,
+  "visual": {
+    "color": "#4FC3FF",
+    "core_color": "#FFFFFF",
+    "fire_sound": "powerlevelling:ki_blast_fire",
+    "impact_sound": "powerlevelling:ki_impact",
+    "impact_particle": "powerlevelling:ki_spark"
+  }
+}

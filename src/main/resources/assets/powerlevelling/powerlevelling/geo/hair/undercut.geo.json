@@ -1,0 +1,189 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.powerlevelling.hair.undercut",
+        "texture_width": 64,
+        "texture_height": 64
+      },
+      "bones": [
+        {
+          "name": "hair",
+          "pivot": [
+            0,
+            24,
+            0
+          ]
+        },
+        {
+          "name": "cap",
+          "parent": "hair",
+          "pivot": [
+            0,
+            32,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                29.1,
+                -4.5
+              ],
+              "size": [
+                9,
+                4,
+                9
+              ],
+              "uv": [
+                0,
+                0
+              ],
+              "inflate": 0.1
+            }
+          ]
+        },
+        {
+          "name": "top",
+          "parent": "hair",
+          "pivot": [
+            0,
+            33,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -3.5,
+                33.1,
+                -4
+              ],
+              "size": [
+                8,
+                2,
+                8
+              ],
+              "uv": [
+                0,
+                13
+              ]
+            },
+            {
+              "origin": [
+                -2.5,
+                35,
+                -3
+              ],
+              "size": [
+                7,
+                1,
+                6
+              ],
+              "uv": [
+                36,
+                11
+              ]
+            },
+            {
+              "origin": [
+                -3.5,
+                31.2,
+                -5.6
+              ],
+              "size": [
+                3,
+                3,
+                1
+              ],
+              "uv": [
+                44,
+                18
+              ]
+            },
+            {
+              "origin": [
+                -0.5,
+                30.4,
+                -5.6
+              ],
+              "size": [
+                3,
+                4,
+                1
+              ],
+              "uv": [
+                54,
+                0
+              ]
+            },
+            {
+              "origin": [
+                2.5,
+                29.6,
+                -5.6
+              ],
+              "size": [
+                2,
+                5,
+                1
+              ],
+              "uv": [
+                54,
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "name": "fall",
+          "parent": "hair",
+          "pivot": [
+            4.6,
+            34,
+            -1
+          ],
+          "rotation": [
+            0,
+            0,
+            -9
+          ],
+          "cubes": [
+            {
+              "origin": [
+                4.2,
+                30.2,
+                -4
+              ],
+              "size": [
+                2,
+                4,
+                7
+              ],
+              "uv": [
+                36,
+                0
+              ]
+            },
+            {
+              "origin": [
+                4.7,
+                28.2,
+                -3
+              ],
+              "size": [
+                1,
+                2,
+                5
+              ],
+              "uv": [
+                32,
+                18
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

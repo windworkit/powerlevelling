@@ -1,0 +1,35 @@
+{
+  "type": "powerlevelling:burst",
+  "name": "attack.powerlevelling.repulse_wave",
+  "description": "attack.powerlevelling.repulse_wave.desc",
+  "cost": { "max_ki_fraction": 0.12 },
+  "input": { "mode": "tap", "windup_ticks": 4, "recovery_ticks": 12 },
+  "damage": { "base": 5.0 },
+  "guard": { "mult": 1.0, "deflect": "never" },
+  "cooldown": 160,
+  "knockback": 1.8,
+  "block_damage": false,
+  "burst": {
+    "radius": 5.0,
+    "expand_ticks": 6,
+    "iframes": 6,
+    "destroy_projectiles": true,
+    "knockback_up": 0.35,
+    "usable_in_hitstun": true,
+    "hitstun_cost_mult": 2.0
+  },
+  "present": {
+    "shape": "ring",
+    "color": "#7FD8FF",
+    "core_color": "#FFFFFF",
+    "color_source": "player",
+    "trail": "",
+    "impact": "ring",
+    "shake": 0.5,
+    "hitstop": 4,
+    "fov_punch": 6,
+    "pose": { "charge": "powerlevelling:arms_cross_flex", "fire": "powerlevelling:arms_spread" },
+    "orb": { "hand": "none", "anchor": "body", "spin": 0 },
+    "sounds": { "fire": "powerlevelling:burst_release" }
+  }
+}

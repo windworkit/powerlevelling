@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:rebirth_orb" },
+    "title": { "translate": "advancement.powerlevelling.unlock_rebirth_orb.title" },
+    "description": { "translate": "advancement.powerlevelling.unlock_rebirth_orb.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "has_ender_pearl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:ender_pearl"] }]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": ["powerlevelling:rebirth_orb"]
+  }
+}

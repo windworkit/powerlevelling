@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.shag",
+  "model": "powerlevelling:hair/shag",
+  "texture": "powerlevelling:textures/entity/hair/shag.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

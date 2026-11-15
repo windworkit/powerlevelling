@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.crest",
+  "model": "powerlevelling:hair/crest",
+  "texture": "powerlevelling:textures/entity/hair/crest.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ENE",
+    "GRG",
+    "EGE"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "R": {
+      "item": "powerlevelling:rebirth_orb"
+    }
+  },
+  "result": {
+    "id": "powerlevelling:reincarnation_orb",
+    "count": 1
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "race.powerlevelling.majin",
+  "lore": "race.powerlevelling.majin.lore",
+  "icon": "powerlevelling:textures/gui/race/majin.png",
+  "sort": 5,
+  "playable": false,
+  "modifiers": {
+    "mult": { "max_hp": 1.10, "ki_regen": 1.05, "move_speed": 0.97 }
+  },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": "*",
+      "default_style": "powerlevelling:buzz",
+      "colors": "any",
+      "suggested_colors": ["#1A1A1A", "#8D8D99", "#E28BAE"]
+    },
+    "eyes": { "colors": "any" },
+    "tail": { "mode": "none" },
+    "parts": {
+      "slots": {
+        "antenna": ["powerlevelling:antenna_long"]
+      }
+    },
+    "skin": {
+      "mode": "palette",
+      "palette": ["#F2A7C3", "#E28BAE", "#B7B7C2", "#8D8D99"]
+    },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false
+  }
+}

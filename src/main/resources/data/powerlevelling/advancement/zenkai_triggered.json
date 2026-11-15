@@ -1,0 +1,14 @@
+{
+  "display": {
+    "icon": { "id": "minecraft:totem_of_undying" },
+    "title": { "translate": "advancement.powerlevelling.zenkai_triggered.title" },
+    "description": { "translate": "advancement.powerlevelling.zenkai_triggered.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "zenkai": { "trigger": "minecraft:impossible" }
+  }
+}

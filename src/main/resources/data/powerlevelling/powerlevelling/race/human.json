@@ -1,0 +1,27 @@
+{
+  "name": "race.powerlevelling.human",
+  "lore": "race.powerlevelling.human.lore",
+  "icon": "powerlevelling:textures/gui/race/human.png",
+  "sort": 2,
+  "playable": false,
+  "modifiers": {
+    "mult": { "exp_gain": 1.10, "mastery_xp": 1.10, "stamina_regen": 1.05, "ki_damage": 0.97 }
+  },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": "*",
+      "default_style": "powerlevelling:flare",
+      "colors": "any",
+      "suggested_colors": ["#1A1A1A", "#4B2E1A", "#C8A165", "#8A8A8A"]
+    },
+    "eyes": { "colors": "any" },
+    "tail": { "mode": "none" },
+    "skin": { "mode": "vanilla" },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false
+  }
+}

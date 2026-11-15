@@ -1,0 +1,9 @@
+{
+  "slot": "horn",
+  "name": "part.powerlevelling.horn_small",
+  "model": "powerlevelling:horn/horn_small",
+  "texture": "powerlevelling:textures/entity/horn/horn_small.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

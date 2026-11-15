@@ -1,0 +1,35 @@
+{
+  "name": "race.powerlevelling.saiyan",
+  "lore": "race.powerlevelling.saiyan.lore",
+  "icon": "powerlevelling:textures/gui/race/saiyan.png",
+  "sort": 0,
+  "playable": true,
+  "modifiers": {
+    "mult": { "melee_damage": 1.05, "ki_regen": 0.95 },
+    "stat_scaling": { "strength": 1.05 }
+  },
+  "zenkai": { "bonus_points": 1, "cooldown_mult": 0.75, "exp_bonus_mult": 1.0 },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": "*",
+      "default_style": "powerlevelling:flare",
+      "colors": "any",
+      "suggested_colors": ["#1A1A1A", "#4B2E1A", "#E8D44D", "#C0392B"]
+    },
+    "eyes": { "colors": "any" },
+    "tail": {
+      "mode": "default_on",
+      "model": "powerlevelling:saiyan_tail",
+      "default_color": "hair"
+    },
+    "skin": { "mode": "vanilla" },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": true,
+    "forms": ["powerlevelling:super_saiyan", "powerlevelling:super_saiyan_2"],
+    "base_form": "powerlevelling:base"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "race.powerlevelling.namekian",
+  "lore": "race.powerlevelling.namekian.lore",
+  "icon": "powerlevelling:textures/gui/race/namekian.png",
+  "sort": 3,
+  "playable": false,
+  "modifiers": {
+    "mult": { "max_hp": 1.08, "ki_regen": 1.10, "melee_damage": 0.95 },
+    "flat": { "max_hp": 20.0 }
+  },
+  "appearance": {
+    "hair": {
+      "allowed": false
+    },
+    "eyes": { "colors": "any" },
+    "tail": { "mode": "none" },
+    "parts": {
+      "slots": {
+        "antenna": ["powerlevelling:antenna_short", "powerlevelling:antenna_long"]
+      }
+    },
+    "skin": {
+      "mode": "palette",
+      "palette": ["#8FD17A", "#5FB35A", "#B6E38F", "#3E8C4B"]
+    },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.short_messy",
+  "model": "powerlevelling:hair/short_messy",
+  "texture": "powerlevelling:textures/entity/hair/short_messy.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

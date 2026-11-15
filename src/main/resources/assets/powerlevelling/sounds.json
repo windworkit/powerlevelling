@@ -1,0 +1,316 @@
+{
+  "ki_charge": {
+    "subtitle": "subtitles.powerlevelling.ki_charge",
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.heartbeat",
+        "type": "event"
+      }
+    ]
+  },
+  "ki_blast_fire": {
+    "subtitle": "subtitles.powerlevelling.ki_blast_fire",
+    "sounds": [
+      {
+        "name": "minecraft:entity.blaze.shoot",
+        "type": "event"
+      }
+    ]
+  },
+  "ki_impact": {
+    "subtitle": "subtitles.powerlevelling.ki_impact",
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "stance_enter": {
+    "subtitle": "subtitles.powerlevelling.stance_enter",
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_netherite",
+        "type": "event"
+      }
+    ]
+  },
+  "stance_exit": {
+    "subtitle": "subtitles.powerlevelling.stance_exit",
+    "sounds": [
+      {
+        "name": "minecraft:item.armor.equip_leather",
+        "type": "event"
+      }
+    ]
+  },
+  "dash": {
+    "subtitle": "subtitles.powerlevelling.dash",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.attack.sweep",
+        "type": "event"
+      }
+    ]
+  },
+  "needle_charge": {
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event"
+      }
+    ]
+  },
+  "needle_fire": {
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.throw",
+        "type": "event"
+      }
+    ]
+  },
+  "burst_release": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.sonic_boom",
+        "type": "event"
+      }
+    ]
+  },
+  "sphere_fire": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.ghast.shoot",
+        "type": "event"
+      }
+    ]
+  },
+  "sphere_explode": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.dragon_fireball.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "ki_impact_large": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "barrage_shot": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.firework_rocket.shoot",
+        "type": "event"
+      }
+    ]
+  },
+  "ki_impact_small": {
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_cluster.hit",
+        "type": "event"
+      }
+    ]
+  },
+  "homing_gather": {
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event"
+      }
+    ]
+  },
+  "homing_launch": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.firework_rocket.launch",
+        "type": "event"
+      }
+    ]
+  },
+  "disc_throw": {
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.throw",
+        "type": "event"
+      }
+    ]
+  },
+  "disc_catch": {
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.return",
+        "type": "event"
+      }
+    ]
+  },
+  "ki_slice": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.attack.sweep",
+        "type": "event"
+      }
+    ]
+  },
+  "bomb_throw": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.egg.throw",
+        "type": "event"
+      }
+    ]
+  },
+  "bomb_fuse": {
+    "sounds": [
+      {
+        "name": "minecraft:block.note_block.hat",
+        "type": "event"
+      }
+    ]
+  },
+  "bomb_bounce": {
+    "sounds": [
+      {
+        "name": "minecraft:block.slime_block.hit",
+        "type": "event"
+      }
+    ]
+  },
+  "bomb_explode": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "beam_charge": {
+    "subtitle": "subtitles.powerlevelling.beam_charge",
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.sonic_charge",
+        "type": "event"
+      }
+    ]
+  },
+  "beam_fire": {
+    "subtitle": "subtitles.powerlevelling.beam_fire",
+    "sounds": [
+      {
+        "name": "minecraft:block.beacon.activate",
+        "type": "event"
+      }
+    ]
+  },
+  "beam_loop": {
+    "subtitle": "subtitles.powerlevelling.beam_loop",
+    "sounds": [
+      {
+        "name": "minecraft:block.beacon.ambient",
+        "type": "event"
+      }
+    ]
+  },
+  "beam_impact": {
+    "subtitle": "subtitles.powerlevelling.beam_impact",
+    "sounds": [
+      {
+        "name": "minecraft:entity.dragon_fireball.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "melee_swing": {
+    "subtitle": "subtitles.powerlevelling.melee_swing",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.attack.sweep",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "melee_hit": {
+    "subtitle": "subtitles.powerlevelling.melee_hit",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.attack.strong",
+        "type": "event"
+      }
+    ]
+  },
+  "melee_hit_heavy": {
+    "subtitle": "subtitles.powerlevelling.melee_hit",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.attack.knockback",
+        "type": "event"
+      },
+      {
+        "name": "minecraft:entity.player.attack.crit",
+        "type": "event"
+      }
+    ]
+  },
+  "guard_start": {
+    "subtitle": "subtitles.powerlevelling.guard_start",
+    "sounds": [
+      {
+        "name": "minecraft:block.shield.block",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 1.2
+      }
+    ]
+  },
+  "guard_perfect": {
+    "subtitle": "subtitles.powerlevelling.guard_perfect",
+    "sounds": [
+      {
+        "name": "minecraft:block.anvil.use",
+        "type": "event",
+        "volume": 1.0,
+        "pitch": 1.5
+      }
+    ]
+  },
+  "guard_break": {
+    "subtitle": "subtitles.powerlevelling.guard_break",
+    "sounds": [
+      {
+        "name": "minecraft:block.shield.break",
+        "type": "event",
+        "volume": 1.0,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "lockon_acquire": {
+    "subtitle": "subtitles.powerlevelling.lockon_acquire",
+    "sounds": [
+      {
+        "name": "minecraft:entity.experience_bottle.throw",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 1.2
+      }
+    ]
+  },
+  "lockon_break": {
+    "subtitle": "subtitles.powerlevelling.lockon_break",
+    "sounds": [
+      {
+        "name": "minecraft:block.note_block.hat",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 0.7
+      }
+    ]
+  }
+}

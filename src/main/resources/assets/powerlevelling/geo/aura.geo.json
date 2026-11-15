@@ -1,0 +1,58 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "powerlevelling:aura",
+        "texture_width": 64,
+        "texture_height": 64,
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 4,
+        "visible_bounds_offset": [0, 1, 0]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [0, 24, 0],
+          "rotation": [0, 0, 0],
+          "cubes": [
+            {
+              "origin": [-6, 12, -6],
+              "size": [12, 24, 12],
+              "uv": [0, 0],
+              "inflate": 0.5
+            }
+          ]
+        },
+        {
+          "name": "inner_ring",
+          "parent": "root",
+          "pivot": [0, 24, 0],
+          "rotation": [0, 0, 0],
+          "cubes": [
+            {
+              "origin": [-4, 16, -4],
+              "size": [8, 16, 8],
+              "uv": [0, 32],
+              "inflate": 0.2
+            }
+          ]
+        },
+        {
+          "name": "outer_flare",
+          "parent": "root",
+          "pivot": [0, 24, 0],
+          "rotation": [0, 0, 0],
+          "cubes": [
+            {
+              "origin": [-8, 8, -8],
+              "size": [16, 32, 16],
+              "uv": [32, 0],
+              "inflate": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

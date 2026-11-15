@@ -1,0 +1,19 @@
+{
+  "type": "powerlevelling:charged_blast",
+  "name": "attack.powerlevelling.scatter_charge",
+  "cost": { "base": 20, "per_charge_tick": 2 },
+  "charge": { "min_ticks": 4, "max_ticks": 20, "move_speed_mult": 0.6 },
+  "damage": { "base": 4.0, "charge_mult": [1.0, 2.5] },
+  "projectile": { "speed": 2.0, "radius": [0.2, 0.5], "range": 48, "lifetime": 100 },
+  "explosion": { "radius": 1.5 },
+  "cooldown": 10,
+  "knockback": 0.5,
+  "block_damage": false,
+  "visual": {
+    "color": "#00BFFF",
+    "core_color": "#FFFFFF",
+    "fire_sound": "powerlevelling:ki_blast_fire",
+    "impact_sound": "powerlevelling:ki_impact",
+    "impact_particle": "powerlevelling:ki_spark"
+  }
+}

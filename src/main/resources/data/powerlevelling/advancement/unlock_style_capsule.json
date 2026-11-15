@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:style_capsule" },
+    "title": { "translate": "advancement.powerlevelling.unlock_style_capsule.title" },
+    "description": { "translate": "advancement.powerlevelling.unlock_style_capsule.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "has_iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:iron_ingot"] }]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": ["powerlevelling:style_capsule"]
+  }
+}

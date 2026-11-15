@@ -1,0 +1,78 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.powerlevelling.hair.flat_top",
+        "texture_width": 64,
+        "texture_height": 64
+      },
+      "bones": [
+        {
+          "name": "hair",
+          "pivot": [
+            0,
+            24,
+            0
+          ]
+        },
+        {
+          "name": "cap",
+          "parent": "hair",
+          "pivot": [
+            0,
+            32,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                29.1,
+                -4.5
+              ],
+              "size": [
+                9,
+                4,
+                9
+              ],
+              "uv": [
+                0,
+                0
+              ],
+              "inflate": 0.1
+            }
+          ]
+        },
+        {
+          "name": "block",
+          "parent": "hair",
+          "pivot": [
+            0,
+            33,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -4.5,
+                33.1,
+                -4.5
+              ],
+              "size": [
+                9,
+                3,
+                9
+              ],
+              "uv": [
+                0,
+                13
+              ],
+              "inflate": 0.1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

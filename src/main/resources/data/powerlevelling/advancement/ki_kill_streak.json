@@ -1,0 +1,14 @@
+{
+  "display": {
+    "icon": { "id": "powerlevelling:ki_blast" },
+    "title": { "translate": "advancement.powerlevelling.ki_kill_streak.title" },
+    "description": { "translate": "advancement.powerlevelling.ki_kill_streak.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "powerlevelling:root",
+  "criteria": {
+    "streak": { "trigger": "minecraft:impossible" }
+  }
+}

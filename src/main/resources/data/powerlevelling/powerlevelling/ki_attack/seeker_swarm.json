@@ -1,0 +1,64 @@
+{
+  "type": "powerlevelling:homing",
+  "name": "attack.powerlevelling.seeker_swarm",
+  "description": "attack.powerlevelling.seeker_swarm.desc",
+  "cost": {
+    "base": 120
+  },
+  "input": {
+    "mode": "tap",
+    "windup_ticks": 12
+  },
+  "damage": {
+    "base": 4.0
+  },
+  "guard": {
+    "mult": 1.0,
+    "deflect": "always"
+  },
+  "projectile": {
+    "speed": 1.2,
+    "radius": [
+      0.14,
+      0.14
+    ],
+    "range": 48,
+    "lifetime": 80
+  },
+  "cooldown": 80,
+  "knockback": 0.2,
+  "block_damage": false,
+  "homing": {
+    "count": 5,
+    "launch_interval": 3,
+    "fan_deg": 14,
+    "turn_deg": 6,
+    "homing_ticks": 40,
+    "steer_delay": 4,
+    "cone_deg": 20,
+    "seek_range": 32,
+    "cap_weight": 0.6
+  },
+  "present": {
+    "shape": "homing",
+    "color": "#C77DFF",
+    "core_color": "#FFFFFF",
+    "color_source": "player",
+    "trail": "curved_ribbon",
+    "impact": "default",
+    "shake": 0.1,
+    "hitstop": 2,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:homing_circle", "fire": "powerlevelling:homing_circle" },
+    "orb": {
+      "hand": "main",
+      "anchor": "palm",
+      "spin": 1
+    },
+    "sounds": {
+      "charge_loop": "powerlevelling:homing_gather",
+      "fire": "powerlevelling:homing_launch",
+      "impact": "powerlevelling:ki_impact_small"
+    }
+  }
+}

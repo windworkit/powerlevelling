@@ -1,0 +1,10 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.ponytail",
+  "model": "powerlevelling:hair/ponytail",
+  "texture": "powerlevelling:textures/entity/hair/ponytail.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "partial",
+  "helmet_visible_bones": ["tail_tie"]
+}

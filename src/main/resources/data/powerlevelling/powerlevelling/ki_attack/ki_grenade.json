@@ -1,0 +1,69 @@
+{
+  "type": "powerlevelling:bomb",
+  "name": "attack.powerlevelling.ki_grenade",
+  "description": "attack.powerlevelling.ki_grenade.desc",
+  "cost": {
+    "base": 100,
+    "per_charge_tick": 1
+  },
+  "input": {
+    "mode": "hold_charge",
+    "min_ticks": 0,
+    "max_ticks": 30,
+    "move_speed_mult": 0.7,
+    "early_release": "fire"
+  },
+  "damage": {
+    "base": 18.0
+  },
+  "guard": {
+    "mult": 0.5,
+    "deflect": "never"
+  },
+  "projectile": {
+    "speed": 1.2,
+    "radius": [
+      0.22,
+      0.4
+    ],
+    "range": 128,
+    "lifetime": 100
+  },
+  "cooldown": 100,
+  "knockback": 0.8,
+  "block_damage": true,
+  "bomb": {
+    "gravity": 0.05,
+    "speed": [
+      0.6,
+      1.6
+    ],
+    "fuse": 40,
+    "bounces": 1,
+    "explosion_radius": 4.5,
+    "edge_factor": 0.5,
+    "radial_knockback": 0.7,
+    "knock_up": 0.8
+  },
+  "present": {
+    "shape": "bomb",
+    "color": "#FF7A2E",
+    "core_color": "#2A1020",
+    "color_source": "attack",
+    "trail": "smoke_puffs",
+    "impact": "explosion_ring",
+    "shake": 0.7,
+    "hitstop": 5,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:bomb_hold", "fire": "powerlevelling:bomb_lob" },
+    "orb": {
+      "hand": "main",
+      "anchor": "palm",
+      "spin": 0
+    },
+    "sounds": {
+      "fire": "powerlevelling:bomb_throw",
+      "impact": "powerlevelling:bomb_explode"
+    }
+  }
+}

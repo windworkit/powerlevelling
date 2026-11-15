@@ -1,0 +1,27 @@
+{
+  "name": "race.powerlevelling.android",
+  "lore": "race.powerlevelling.android.lore",
+  "icon": "powerlevelling:textures/gui/race/android.png",
+  "sort": 6,
+  "playable": false,
+  "modifiers": {
+    "mult": { "ki_regen": 1.25, "max_ki": 0.90 }
+  },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": "*",
+      "default_style": "powerlevelling:flare",
+      "colors": "any",
+      "suggested_colors": ["#1A1A1A", "#4B2E1A", "#C0C0C8"]
+    },
+    "eyes": { "colors": "any" },
+    "tail": { "mode": "none" },
+    "skin": { "mode": "vanilla" },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": false
+  }
+}

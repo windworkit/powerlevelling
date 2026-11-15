@@ -1,0 +1,9 @@
+{
+  "slot": "hair",
+  "name": "part.powerlevelling.wild_spikes",
+  "model": "powerlevelling:hair/wild_spikes",
+  "texture": "powerlevelling:textures/entity/hair/wild_spikes.png",
+  "tintable": true,
+  "anchor": "head",
+  "helmet": "hide"
+}

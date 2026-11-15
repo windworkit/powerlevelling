@@ -1,0 +1,36 @@
+{
+  "type": "powerlevelling:sphere",
+  "name": "attack.powerlevelling.meteor_core",
+  "description": "attack.powerlevelling.meteor_core.desc",
+  "cost": { "base": 40, "per_charge_tick": 4 },
+  "input": { "mode": "hold_charge", "min_ticks": 6, "max_ticks": 40, "move_speed_mult": 0.5, "early_release": "fire" },
+  "damage": { "base": 8.0, "charge_mult": [1.0, 3.75] },
+  "guard": { "mult": 0.5, "deflect": "below_charge:0.4" },
+  "projectile": { "speed": 1.6, "radius": [0.35, 1.3], "range": 48, "lifetime": 100 },
+  "cooldown": 40,
+  "knockback": 0.8,
+  "block_damage": false,
+  "sphere": {
+    "speed": [1.6, 0.9],
+    "explosion_radius": [2.0, 4.5],
+    "radial_knockback": 1.4,
+    "radial_knockback_up": 0.3
+  },
+  "present": {
+    "shape": "orb_cage",
+    "color": "#FF9A3C",
+    "core_color": "#FFF2C8",
+    "color_source": "player",
+    "trail": "comet_heavy",
+    "impact": "explosion_ring",
+    "shake": 0.6,
+    "hitstop": 6,
+    "fov_punch": 0,
+    "pose": { "charge": "powerlevelling:overhead_two_hand", "fire": "powerlevelling:overhead_throw" },
+    "orb": { "hand": "both", "anchor": "overhead", "spin": 1 },
+    "sounds": {
+      "fire": "powerlevelling:sphere_fire",
+      "impact": "powerlevelling:sphere_explode"
+    }
+  }
+}

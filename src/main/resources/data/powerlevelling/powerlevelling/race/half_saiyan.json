@@ -1,0 +1,35 @@
+{
+  "name": "race.powerlevelling.half_saiyan",
+  "lore": "race.powerlevelling.half_saiyan.lore",
+  "icon": "powerlevelling:textures/gui/race/half_saiyan.png",
+  "sort": 1,
+  "playable": true,
+  "modifiers": {
+    "mult": { "ki_damage": 1.03, "exp_gain": 1.08, "mastery_xp": 1.05 }
+  },
+  "zenkai": { "bonus_points": 0, "cooldown_mult": 1.0, "exp_bonus_mult": 1.25 },
+  "appearance": {
+    "hair": {
+      "allowed": true,
+      "styles": "*",
+      "default_style": "powerlevelling:flare",
+      "colors": "any",
+      "suggested_colors": ["#1A1A1A", "#4B2E1A", "#E8D44D", "#C0392B"]
+    },
+    "eyes": { "colors": "any" },
+    "tail": {
+      "mode": "optional",
+      "default": false,
+      "model": "powerlevelling:saiyan_tail",
+      "default_color": "hair"
+    },
+    "skin": { "mode": "vanilla" },
+    "height": [0.92, 1.08],
+    "build": [0.94, 1.06]
+  },
+  "hooks": {
+    "oozaru_capable": true,
+    "forms": ["powerlevelling:super_saiyan"],
+    "base_form": "powerlevelling:base"
+  }
+}

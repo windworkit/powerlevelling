@@ -1,0 +1,10 @@
+{
+  "name": "ki_nature.powerlevelling.volatile",
+  "description": "ki_nature.powerlevelling.volatile.desc",
+  "sort": 2,
+  "enabled": true,
+  "modifiers": {
+    "mult": { "ki_damage": 1.15, "ki_cost": 1.10, "damage_taken": 1.12, "max_hp": 0.90 },
+    "stat_scaling": { "ki_power": 1.10 }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.powerlevelling.horn.horn_small",
+        "texture_width": 32,
+        "texture_height": 32
+      },
+      "bones": [
+        {
+          "name": "horn",
+          "pivot": [0, 24, 0],
+          "cubes": [
+            {
+              "origin": [-2, 24, -2],
+              "size": [4, 8, 4],
+              "uv": [0, 0]
+            },
+            {
+              "origin": [-1, 32, -1],
+              "size": [2, 4, 2],
+              "uv": [0, 12]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
