@@ -105,40 +105,36 @@ public final class KiOrbMeshRenderer {
         int a = Mth.clamp((int) (alpha * 255.0f), 0, 255);
         int r = (rgb >> 16) & 255, g = (rgb >> 8) & 255, b = rgb & 255;
         for (int i = 0; i < segments; i++) {
-            float t0 = i / (float) segments;
-            float t1 = (i + 1) / (float) segments;
-            float a0 = TWO_PI * t0 + phase;
-            float a1 = TWO_PI * t1 + phase;
+            float u0 = i / (float) segments;
+            float u1 = (i + 1) / (float) segments;
+            float a0 = TWO_PI * u0 + phase;
+            float a1 = TWO_PI * u1 + phase;
             float wobble0 = 1.0f + 0.035f * Mth.sin(a0 * 3.0f + phase * 7.0f);
             float wobble1 = 1.0f + 0.035f * Mth.sin(a1 * 3.0f + phase * 7.0f);
-            Point p0 = ringPoint(a0, radius * wobble0, halfWidth);
-            Point p1 = ringPoint(a1, radius * wobble1, halfWidth);
-            emitBandQuad(vc, pose, p0, p1, r, g, b, a, t0, t1);
+            float mid0 = radius * wobble0;
+            float mid1 = radius * wobble1;
+            Point inner0 = ringPoint(a0, mid0 - halfWidth);
+            Point outer0 = ringPoint(a0, mid0 + halfWidth);
+            Point inner1 = ringPoint(a1, mid1 - halfWidth);
+            Point outer1 = ringPoint(a1, mid1 + halfWidth);
+
+            // Front face
+            vertex(vc, pose, inner0, u0, 0.0f, r, g, b, a);
+            vertex(vc, pose, outer0, u0, 1.0f, r, g, b, a);
+            vertex(vc, pose, outer1, u1, 1.0f, r, g, b, a);
+            vertex(vc, pose, inner1, u1, 0.0f, r, g, b, a);
+            // Reverse face for the opposite side of the tilted orbital plane.
+            vertex(vc, pose, inner1, u1, 0.0f, r, g, b, a);
+            vertex(vc, pose, outer1, u1, 1.0f, r, g, b, a);
+            vertex(vc, pose, outer0, u0, 1.0f, r, g, b, a);
+            vertex(vc, pose, inner0, u0, 0.0f, r, g, b, a);
         }
     }
 
-    private static Point ringPoint(float angle, float radius, float halfWidth) {
+    private static Point ringPoint(float angle, float radius) {
         float nx = Mth.cos(angle);
         float ny = Mth.sin(angle);
-        return new Point(nx * (radius + halfWidth), ny * (radius + halfWidth), 0f, 0f, 0f, 1f);
-    }
-
-    private static void emitBandQuad(VertexConsumer vc, PoseStack.Pose pose, Point outer0, Point outer1,
-                                     int r, int g, int b, int a, float u0, float u1) {
-        // Reconstruct the inner edge along the same radial directions.
-        float outerRadius0 = (float) Math.hypot(outer0.x, outer0.y);
-        float outerRadius1 = (float) Math.hypot(outer1.x, outer1.y);
-        float innerRatio = Math.max(0.0f, (outerRadius0 - 0.14f) / Math.max(outerRadius0, 1.0E-4f));
-        // The ratio is refined below by a fixed normalized width; ring geometry stays smooth at all orb sizes.
-        float x0 = outer0.x * innerRatio;
-        float y0 = outer0.y * innerRatio;
-        float x1 = outer1.x * innerRatio;
-        float y1 = outer1.y * innerRatio;
-
-        vertex(vc, pose, new Point(x0, y0, 0f, 0f, 0f, 1f), u0, 0.0f, r, g, b, a);
-        vertex(vc, pose, outer0, u0, 1.0f, r, g, b, a);
-        vertex(vc, pose, outer1, u1, 1.0f, r, g, b, a);
-        vertex(vc, pose, new Point(x1, y1, 0f, 0f, 0f, 1f), u1, 0.0f, r, g, b, a);
+        return new Point(nx * radius, ny * radius, 0f, 0f, 0f, 1f);
     }
 
     private static void drawSpiral(VertexConsumer vc, PoseStack.Pose pose, float radius, float halfWidth,
