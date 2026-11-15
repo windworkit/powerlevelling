@@ -45,8 +45,8 @@ public class KiAuraWispParticle extends TextureSheetParticle {
         this.gravity = 0f;
         this.hasPhysics = false;
         this.friction = 0.97f;
-        this.lifetime = 80 + this.random.nextInt(60); // 80-140 ticks
-        this.baseSize = 0.18f + this.random.nextFloat() * 0.12f;
+        this.lifetime = 48 + this.random.nextInt(24); // 48-72 ticks: steady upward flow with regular refresh
+        this.baseSize = 0.22f + this.random.nextFloat() * 0.14f;
         this.quadSize = baseSize;
         this.orbitRadius = orbitRadius;
         this.orbitSpeed = orbitSpeed;
@@ -72,7 +72,7 @@ public class KiAuraWispParticle extends TextureSheetParticle {
     }
 
     /** Maximum alpha for wisps, driven by config (default 0.35). */
-    private static float maxAlpha = 0.35f;
+    private static float maxAlpha = 0.72f;
 
     public static void setMaxAlpha(float alpha) {
         maxAlpha = Mth.clamp(alpha, 0f, 1f);

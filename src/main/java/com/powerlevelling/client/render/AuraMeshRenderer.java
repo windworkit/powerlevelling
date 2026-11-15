@@ -19,8 +19,6 @@ public final class AuraMeshRenderer {
     // Use the same emissive translucent pipeline as the existing aura effects so the
     // ribbons retain alpha blending and render independently of the player's skin depth.
     private static final RenderType ENERGY = RenderType.entityTranslucentEmissive(RIBBON_TEXTURE);
-    private static final RenderType PRESSURE = RenderType.entityTranslucentEmissive(
-            ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_ground.png"));
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
 
@@ -42,26 +40,26 @@ public final class AuraMeshRenderer {
         if (turbo) stateStrength *= 1.12f;
         // AURA_OPACITY was historically tuned for tiny particle sprites. The ribbon mesh
         // needs a stronger response at the same config value to be visible in third person.
-        float output = stateStrength * Mth.clamp(opacity * 2.6f, 0.0f, 1.5f);
+        float output = stateStrength * Mth.clamp(opacity * 3.2f, 0.0f, 1.0f);
 
         // These dimensions are in player-model pixels. The previous 1-3 px radius
         // hugged the skin and made the new aura almost impossible to distinguish.
-        float height = superSaiyan ? 48.0f : 40.0f + 14.0f * charge;
+        float height = superSaiyan ? 54.0f : 48.0f + 12.0f * charge;
         if (transforming) height += 6.0f * (0.5f + 0.5f * Mth.sin(age * 0.32f));
         if (turbo) height += 4.0f;
         if (!charging && !transforming && !superSaiyan && !turbo) height = 46.0f;
 
         // Place the ribbon centerlines outside the player model's roughly 4 px torso
         // half-width; this avoids the skin depth-buffer hiding most of the effect.
-        float radius = (superSaiyan ? 11.5f : 9.6f + 2.0f * charge) * scale;
-        float width = (superSaiyan ? 3.8f : 3.2f + 0.7f * charge) * scale;
+        float radius = (superSaiyan ? 10.8f : 8.6f + 1.8f * charge) * scale;
+        float width = (superSaiyan ? 2.9f : 2.6f + 0.4f * charge) * scale;
         if (turbo) {
             radius *= 1.14f;
             width *= 1.12f;
         }
 
         VertexConsumer mesh = buffers.getBuffer(ENERGY);
-        int mainCount = superSaiyan ? 9 : charging || transforming ? 8 : 8;
+        int mainCount = superSaiyan ? 12 : charging || transforming ? 12 : 9;
         int filamentCount = lodTier >= 2 ? 4 : lodTier == 1 ? 7 : 11;
         if (turbo) mainCount += 2;
         if (lodTier >= 2) {
@@ -69,20 +67,20 @@ public final class AuraMeshRenderer {
             filamentCount = 3;
         }
 
-        // Main tongues form an intentionally uneven crown rather than a spinning oval.
+        // Upward flame tongues rise from the waist, flare around the torso, and curl above the head.
         for (int i = 0; i < mainCount; i++) {
             float seed = i * 2.3999632f + 0.37f;
-            float angle = seed + 0.20f * Mth.sin(seed * 1.7f);
+            float angle = seed + age * 0.018f + 0.16f * Mth.sin(seed * 1.7f);
             float h = height * (0.72f + 0.25f * (0.5f + 0.5f * Mth.sin(seed * 2.1f)));
             float w = width * (0.78f + 0.34f * (0.5f + 0.5f * Mth.sin(seed * 3.7f)));
             float drift = 0.11f + 0.035f * Mth.sin(seed * 4.3f);
-            float alpha = output * (superSaiyan ? 0.78f
-                    : charging || transforming ? 0.72f : turbo ? 0.68f : 0.72f);
+            float alpha = output * (superSaiyan ? 0.94f
+                    : charging || transforming ? 0.92f : turbo ? 0.88f : 0.82f);
             drawFlame(mesh, poseStack.last(), rgb, angle, radius, h, w, drift,
                     age, seed, alpha * 1.15f, 1.0f, 0.70f, scale);
 
             // Hot inner filament. Kept narrow so the player remains readable through the aura.
-            drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, superSaiyan ? 0.56f : 0.40f),
+            drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, superSaiyan ? 0.48f : 0.28f),
                     angle + 0.035f, radius * 0.985f, h * 0.91f, w * 0.25f,
                     drift * 0.62f, age * 1.13f, seed + 1.8f,
                     alpha * 0.82f, 0.34f, 0.82f, scale);
@@ -97,17 +95,11 @@ public final class AuraMeshRenderer {
             float w = width * (0.20f + 0.05f * Mth.sin(seed * 2.0f));
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, 0.30f),
                     angle, r, h, w, 0.22f, age * 1.34f, seed + 3.2f,
-                    output * 0.32f, 0.18f, 0.92f, scale);
+                    output * 0.42f, 0.18f, 0.92f, scale);
         }
 
         // The pulse ring wraps the torso; ground debris is handled separately.
-        if (charging || transforming || superSaiyan || turbo) {
-            float pulse = 0.92f + 0.08f * Mth.sin(age * 0.18f);
-            VertexConsumer pressure = buffers.getBuffer(PRESSURE);
-            drawPressureRing(pressure, poseStack.last(), rgb, (6.2f + 1.8f * charge) * scale * pulse,
-                    10.0f * scale, output * (transforming ? 0.30f : charging ? 0.26f : turbo ? 0.25f : 0.20f));
-        }
-    }
+}
 
 
     /**
@@ -190,8 +182,8 @@ public final class AuraMeshRenderer {
             float t = i / (float) segments;
             FlamePoint next = point(baseAngle, baseRadius, height, maxWidth, drift, age, seed, radialBias, t, scale);
             float mid = (previousT + t) * 0.5f;
-            float envelope = Mth.sin(Mth.PI * mid);
-            float flicker = 0.83f + 0.17f * Mth.sin(age * 0.18f + seed * 3.7f + mid * 8.0f);
+            float envelope = 0.48f + 0.52f * Mth.sin(Mth.PI * mid);
+            float flicker = 0.82f + 0.18f * Mth.sin(age * 0.22f + seed * 3.7f + mid * 8.0f);
             int a = alpha * envelope * flicker > 0.001f
                     ? Mth.clamp((int) (alpha * envelope * flicker * 255.0f), 0, 255) : 0;
             int color = shade(rgb, brightness + 0.08f * (1.0f - mid));
@@ -203,15 +195,15 @@ public final class AuraMeshRenderer {
 
     private static FlamePoint point(float baseAngle, float baseRadius, float height, float maxWidth,
                                     float drift, float age, float seed, float radialBias, float t, float scale) {
-        float envelope = Mth.sin(Mth.PI * t);
-        float wave = Mth.sin(age * 0.105f + seed + t * 7.4f) * drift * envelope;
-        float curl = Mth.sin(seed * 2.0f + t * 5.0f) * 0.075f * envelope;
+        float envelope = 0.35f + 0.65f * Mth.sin(Mth.PI * t);
+        float wave = Mth.sin(age * 0.16f + seed + t * 8.2f) * drift * envelope;
+        float curl = Mth.sin(seed * 2.0f + t * 5.0f + age * 0.055f) * 0.11f * envelope;
         float angle = baseAngle + wave + curl;
-        float radius = baseRadius * (0.78f + 0.20f * envelope + 0.06f * Mth.sin(age * 0.12f + seed + t * 4.0f));
+        float radius = baseRadius * (0.72f + 0.34f * t + 0.05f * Mth.sin(age * 0.15f + seed + t * 4.0f));
         radius += radialBias * envelope * scale;
-        float y = (22.5f - (height + 7.5f) * t) * scale;
-        float taper = (float) Math.pow(Math.max(0.0f, envelope), 0.72);
-        float flutter = 0.86f + 0.14f * Mth.sin(age * 0.16f + seed * 2.4f + t * 10.0f);
+        float y = (17.0f - (height + 10.0f) * t) * scale;
+        float taper = (float) Math.pow(Math.max(0.0f, 1.0f - t), 0.72);
+        float flutter = 0.82f + 0.18f * Mth.sin(age * 0.20f + seed * 2.4f + t * 11.0f);
         float halfWidth = maxWidth * taper * flutter;
         return new FlamePoint(Mth.cos(angle) * radius, y, Mth.sin(angle) * radius,
                 -Mth.sin(angle) * halfWidth, Mth.cos(angle) * halfWidth,
