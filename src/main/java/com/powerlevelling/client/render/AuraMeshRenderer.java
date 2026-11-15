@@ -67,7 +67,7 @@ public final class AuraMeshRenderer {
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, superSaiyan ? 0.56f : 0.40f),
                     angle + 0.035f, radius * 0.985f, h * 0.91f, w * 0.25f,
                     drift * 0.62f, age * 1.13f, seed + 1.8f,
-                    alpha * 0.92f, 0.34f, 0.82f);
+                    alpha * 0.92f, 0.34f, 0.82f, scale);
         }
 
         // Shorter, faster strands animate inside the silhouette; they are not a cloud of orbiting sprites.
@@ -79,7 +79,7 @@ public final class AuraMeshRenderer {
             float w = width * (0.20f + 0.05f * Mth.sin(seed * 2.0f));
             drawFlame(mesh, poseStack.last(), mix(rgb, 0xFFFFFF, 0.30f),
                     angle, r, h, w, 0.22f, age * 1.34f, seed + 3.2f,
-                    output * 0.20f, 0.18f, 0.92f);
+                    output * 0.20f, 0.18f, 0.92f, scale);
         }
 
         // A restrained pressure halo appears only as output rises; it sits at boot level.
