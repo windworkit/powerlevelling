@@ -87,6 +87,7 @@ The first integrated visual sample lives on `visual-overhaul/aura-foundation`. I
 ### Ki orb mesh
 
 - `KiOrbMeshRenderer` replaces the cubic orb silhouette with a UV sphere plasma shell, nested hot core, two tilted orbital bands, a wrapping filament, and the existing smooth trail for moving blasts.
+- `ki_plasma_shell.png` is a dedicated wrapped-UV plasma surface texture; the sphere no longer stretches the old cube-face texture over its surface.
 - `KiOrbModel.render` remains the shared API, so hand-formed orbs and travelling blasts use the same mesh.
 - `KiOrbStyles` now handles only formation/shape profiles (default, barrage, homing, bomb, beam, and disc). The disc remains on its legacy geometry for the next pass.
 
