@@ -71,3 +71,25 @@ Ki attacks should share a material language with the aura but have their own sil
 3. Add a distinct Super Saiyan profile and restrained lightning.
 4. Rework ki orb, blast, beam, disc, and impact visuals to share the same material language.
 5. Add additional transformation/aura profiles after the first family is tested in-game.
+
+
+## First implementation sample (feature branch)
+
+The first integrated visual sample lives on `visual-overhaul/aura-foundation`. It intentionally uses procedural mesh geometry rather than a static Blockbench rig for the aura and charged orb: their defining shapes deform continuously every frame, so a dedicated renderer is a better fit than forcing them into a bone animation.
+
+### Aura mesh
+
+- `AuraMeshRenderer` emits tapered, double-sided flame ribbons with an asymmetric silhouette, inner hot filaments, controlled curvature, and a subtle ground pressure ring.
+- `energy_ribbon.png` is a dedicated 64×128 alpha texture for the flame material. Ki color is applied by vertex tint, so one authored texture supports different character ki colors and Super Saiyan gold.
+- `AuraLayer` continues to resolve synchronized visual state, character tint, cosmetic anchor, helmet behavior, visibility, and LOD. Geometry is delegated to the new renderer.
+- `AuraFirstPersonRenderer` uses the same ribbon language in a restrained peripheral view-space profile, avoiding a bright panel over the crosshair.
+
+### Ki orb mesh
+
+- `KiOrbMeshRenderer` replaces the cubic orb silhouette with a UV sphere plasma shell, nested hot core, two tilted orbital bands, a wrapping filament, and the existing smooth trail for moving blasts.
+- `KiOrbModel.render` remains the shared API, so hand-formed orbs and travelling blasts use the same mesh.
+- `KiOrbStyles` now handles only formation/shape profiles (default, barrage, homing, bomb, beam, and disc). The disc remains on its legacy geometry for the next pass.
+
+### Validation status
+
+The source changes are committed on the feature branch, but they have **not** been verified in a running Minecraft client. A Gradle GitHub Actions workflow was added for the branch; the repository currently reports the job failing before any steps are assigned or started, with no downloadable job log. Do not treat that as a compile result. The required next check is a local `./gradlew build`, followed by an in-game pass covering both player skins, first/third person, preview, charge ramp, transformed idle, and multiple players in view.
