@@ -16,8 +16,10 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class AuraMeshRenderer {
     private static final ResourceLocation RIBBON_TEXTURE = ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/energy_ribbon.png");
-    private static final RenderType ENERGY = RenderType.eyes(RIBBON_TEXTURE);
-    private static final RenderType PRESSURE = RenderType.eyes(
+    // Use the same emissive translucent pipeline as the existing aura effects so the
+    // ribbons retain alpha blending and render independently of the player's skin depth.
+    private static final RenderType ENERGY = RenderType.entityTranslucentEmissive(RIBBON_TEXTURE);
+    private static final RenderType PRESSURE = RenderType.entityTranslucentEmissive(
             ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_ground.png"));
     private static final int LIGHT = LightTexture.FULL_BRIGHT;
     private static final float TWO_PI = (float) (Math.PI * 2.0);
@@ -38,17 +40,21 @@ public final class AuraMeshRenderer {
                 : charging ? 0.72f + 0.28f * charge
                 : turbo ? 0.84f : 0.48f;
         if (turbo) stateStrength *= 1.12f;
-        float output = stateStrength * Mth.clamp(opacity, 0.0f, 1.5f);
+        // AURA_OPACITY was historically tuned for tiny particle sprites. The ribbon mesh
+        // needs a stronger response at the same config value to be visible in third person.
+        float output = stateStrength * Mth.clamp(opacity * 2.6f, 0.0f, 1.5f);
 
         // These dimensions are in player-model pixels. The previous 1-3 px radius
         // hugged the skin and made the new aura almost impossible to distinguish.
-        float height = superSaiyan ? 44.0f : 36.0f + 12.0f * charge;
+        float height = superSaiyan ? 48.0f : 40.0f + 14.0f * charge;
         if (transforming) height += 6.0f * (0.5f + 0.5f * Mth.sin(age * 0.32f));
         if (turbo) height += 4.0f;
         if (!charging && !transforming && !superSaiyan && !turbo) height = 34.0f;
 
-        float radius = (superSaiyan ? 6.4f : 5.2f + 1.2f * charge) * scale;
-        float width = (superSaiyan ? 2.15f : 1.85f + 0.35f * charge) * scale;
+        // Place the ribbon centerlines outside the player model's roughly 4 px torso
+        // half-width; this avoids the skin depth-buffer hiding most of the effect.
+        float radius = (superSaiyan ? 11.5f : 9.6f + 2.0f * charge) * scale;
+        float width = (superSaiyan ? 3.8f : 3.2f + 0.7f * charge) * scale;
         if (turbo) {
             radius *= 1.14f;
             width *= 1.12f;

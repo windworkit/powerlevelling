@@ -54,10 +54,9 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
                        float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw,
                        float headPitch) {
         if (player.isInvisible() || player.isSpectator()) return;
+        // Aura visuals follow the player state and must not depend on character creation
+        // or snapshot sync; those are appearance data, not a rendering prerequisite.
         CharacterSnapshot snap = ClientCharacters.effective(player.getId());
-        if (snap == null) return;
-        boolean preview = snap == ClientCharacters.previewOverride;
-        if (!snap.created() && !preview) return;
 
         boolean inStance = ClientVisualState.has(player.getId(), VisualStatePayload.STANCE);
         boolean charging = ClientVisualState.has(player.getId(), VisualStatePayload.CHARGING);
@@ -71,8 +70,10 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
             auraColor = 0xFFD700;
         } else {
             // Prefer the character's aura color; fall back to ki color, then the project default.
-            auraColor = snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor();
-            if (auraColor < 0) auraColor = 0xFF0000;
+            auraColor = snap != null
+                    ? (snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor())
+                    : -1;
+            if (auraColor < 0) auraColor = 0xFF3A18;
         }
         int color = 0xFF000000 | (auraColor & 0xFFFFFF);
 

@@ -46,7 +46,6 @@ public final class AuraFirstPersonRenderer {
         if (event.getHand() != net.minecraft.world.InteractionHand.MAIN_HAND) return;
 
         CharacterSnapshot snap = ClientCharacters.effective(player.getId());
-        if (snap == null) return;
 
         boolean inStance = ClientVisualState.has(player.getId(), VisualStatePayload.STANCE);
         boolean charging = ClientVisualState.has(player.getId(), VisualStatePayload.CHARGING);
@@ -64,8 +63,10 @@ public final class AuraFirstPersonRenderer {
         if (isSSJ) {
             auraColor = 0xFFD700;
         } else {
-            auraColor = snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor();
-            if (auraColor < 0) auraColor = 0xFF0000;
+            auraColor = snap != null
+                    ? (snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor())
+                    : -1;
+            if (auraColor < 0) auraColor = 0xFF3A18;
         }
 
         float age = player.tickCount + event.getPartialTick();
@@ -79,7 +80,9 @@ public final class AuraFirstPersonRenderer {
         strength *= Mth.clamp(configScale, 0.1f, 2f);
 
         PoseStack pose = event.getPoseStack();
-        MultiBufferSource buffer = mc.renderBuffers().bufferSource();
+        // RenderHandEvent supplies the immediate hand-pass buffer; using the world
+        // buffer here queues geometry into a batch that may already have been flushed.
+        MultiBufferSource buffer = event.getMultiBufferSource();
         pose.pushPose();
         drawViewSpaceAura(pose, buffer, auraColor, age, ramp, strength, isSSJ, isTurbo);
         pose.popPose();
@@ -88,6 +91,6 @@ public final class AuraFirstPersonRenderer {
     private static void drawViewSpaceAura(PoseStack pose, MultiBufferSource buffer, int auraColor,
                                           float age, float ramp, float strength, boolean isSSJ, boolean isTurbo) {
         AuraMeshRenderer.renderFirstPerson(pose, buffer, auraColor, age,
-                Mth.clamp(ramp / 100.0f, 0.0f, 1.0f), strength, isSSJ, isTurbo);
+                Mth.clamp(ramp, 0.0f, 1.0f), strength, isSSJ, isTurbo);
     }
 }
