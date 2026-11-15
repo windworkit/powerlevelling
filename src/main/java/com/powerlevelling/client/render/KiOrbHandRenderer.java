@@ -79,7 +79,7 @@ public final class KiOrbHandRenderer {
         } else if (orb.anchor == OrbStatePayload.ANCHOR_OVERHEAD) {
             pose.translate(0.006f * Mth.cos(age * 0.2f), OVERHEAD_Y + 0.012f * Mth.sin(age * 0.22f), OVERHEAD_Z - r * 0.5f);
         } else if (orb.hand == OrbStatePayload.HAND_FINGER) {
-            // Small glowing cube at the fingertip: further out and a little higher than a palm orb.
+            // Small ki sphere at the fingertip: further out and a little higher than a palm orb.
             pose.translate(VIEW_X * side + 0.004f * Mth.cos(age * 0.3f), VIEW_Y + 0.12f, VIEW_Z - 0.28f);
         } else {
             pose.translate(VIEW_X * side + 0.006f * Mth.cos(age * 0.2f),

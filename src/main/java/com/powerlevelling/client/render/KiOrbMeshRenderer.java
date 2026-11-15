@@ -142,7 +142,7 @@ public final class KiOrbMeshRenderer {
         int a = Mth.clamp((int) (alpha * 255.0f), 0, 255);
         int r = (rgb >> 16) & 255, g = (rgb >> 8) & 255, b = rgb & 255;
         final int segments = 80;
-        Point previous = spiralPoint(0.035f, 0.0f, radius);
+        Point previous = spiralPoint(0.0f, age * 0.045f + phase, radius);
         for (int i = 1; i <= segments; i++) {
             float t = i / (float) segments;
             float theta = age * 0.045f + phase + t * TWO_PI * 2.35f;
