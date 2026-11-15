@@ -5,9 +5,7 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.powerlevelling.character.CharacterRegistries;
 import com.powerlevelling.character.CharacterSnapshot;
-import com.powerlevelling.character.CosmeticPart;
 import com.powerlevelling.client.ClientCharacters;
 import com.powerlevelling.client.ClientVisualState;
 import com.powerlevelling.config.ClientConfig;
@@ -25,7 +23,6 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
 
 /**
  * Dragon Ball style aura renderer: flowing energy wisp columns surging upwards from the feet,
@@ -40,8 +37,6 @@ import net.minecraft.world.entity.EquipmentSlot;
  * - y = -8.0: Top of head
  */
 public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-
-    static final ResourceLocation AURA_PART_ID = ResourceLocation.fromNamespaceAndPath("powerlevelling", "aura");
 
     static final RenderType WISP_RENDER_TYPE = RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_wisp.png"));
     static final RenderType GROUND_RENDER_TYPE = RenderType.entityTranslucentEmissive(ResourceLocation.fromNamespaceAndPath("powerlevelling", "textures/entity/aura/aura_ground.png"));
@@ -59,10 +54,9 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
                        float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw,
                        float headPitch) {
         if (player.isInvisible() || player.isSpectator()) return;
+        // Aura visuals follow the player state and must not depend on character creation
+        // or snapshot sync; those are appearance data, not a rendering prerequisite.
         CharacterSnapshot snap = ClientCharacters.effective(player.getId());
-        if (snap == null) return;
-        boolean preview = snap == ClientCharacters.previewOverride;
-        if (!snap.created() && !preview) return;
 
         boolean inStance = ClientVisualState.has(player.getId(), VisualStatePayload.STANCE);
         boolean charging = ClientVisualState.has(player.getId(), VisualStatePayload.CHARGING);
@@ -71,26 +65,17 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
         boolean isTurbo = ClientVisualState.has(player.getId(), VisualStatePayload.TURBO);
         if (!inStance && !charging && !isSSJ && !transforming && !isTurbo) return;
 
-        CosmeticPart part = CharacterRegistries.getPart(player.level().registryAccess(), AURA_PART_ID);
-        if (part == null) return;
-        if (!player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
-            CosmeticPart.HelmetMode mode = switch (ClientConfig.HAIR_WITH_HELMET.get()) {
-                case ALWAYS_HIDE -> CosmeticPart.HelmetMode.HIDE;
-                case ALWAYS_SHOW -> CosmeticPart.HelmetMode.SHOW;
-                case RESPECT_PART -> part.helmet();
-            };
-            if (mode == CosmeticPart.HelmetMode.HIDE) return;
-            if (mode == CosmeticPart.HelmetMode.PARTIAL && part.helmetVisibleBones().isEmpty()) return;
-        }
-
         int auraColor;
         if (isSSJ) {
             auraColor = 0xFFD700;
         } else {
-            auraColor = snap.kiColor();
-            if (auraColor == -1) auraColor = 0xFF0000;
+            // Prefer the character's aura color; fall back to ki color, then the project default.
+            auraColor = snap != null
+                    ? (snap.auraColor() >= 0 ? snap.auraColor() : snap.kiColor())
+                    : -1;
+            if (auraColor < 0) auraColor = 0xFF3A18;
         }
-        int color = part.tintable() ? 0xFF000000 | auraColor : 0xFFFFFFFF;
+        int color = 0xFF000000 | (auraColor & 0xFFFFFF);
 
         ClientVisualState.State st = ClientVisualState.get(player.getId());
         float chargeTicks = st != null ? st.chargeTicks : 0f;
@@ -125,40 +110,22 @@ public class AuraLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<Abs
         }
 
         PlayerModel<AbstractClientPlayer> model = getParentModel();
-        ModelPart anchor = part.anchor() == CosmeticPart.Anchor.BODY ? model.body : model.head;
+        // Aura is a body-space visual effect, not an equipped cosmetic part.
+        ModelPart anchor = model.body;
 
         poseStack.pushPose();
         try {
             anchor.translateAndRotate(poseStack);
+            // AuraMeshRenderer vertices are authored in player-model pixels.
+            // ModelPart scales its own cubes by 1/16; custom vertices need the same conversion.
+            poseStack.scale(1.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
             // Model space coordinates (+Y is DOWNWARDS):
             // Neck = y=0, Waist = y=12, Feet = y=24, Head = y=-8
 
-            // 1. Ground flare on the floor under the boots (y = +24)
-            renderGroundFlare(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 2. Rising energy wisps surging upwards from feet to head
-            renderWisps(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 3. Expanding DBZ shockwave rings rising from the boots
-            renderRings(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-
-            // 4. SSJ / Charging teardrop flame shell wrapping the entire character
-            boolean flameShellEnabled = lodTier == 0 ? ClientConfig.AURA_LOD_FLAME_SHELL_1.get()
-                    : lodTier == 1 ? ClientConfig.AURA_LOD_FLAME_SHELL_2.get() : false;
-            if (flameShellEnabled) {
-                renderFlameShell(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-            }
-
-            // 5. Soft energy halo around mid-torso (y = +8)
-            drawSoftGlow(poseStack, buffer, (4.5f + ramp * 2f) * scale, auraColor, age * 0.7f,
-                         intense ? 0.05f + ramp * 0.05f : isSSJ ? 0.04f : 0.02f, alphaScale);
-
-            // 6. Lightning crackle arcing along the aura height
-            boolean lightningEnabled = lodTier == 0 ? ClientConfig.AURA_LOD_LIGHTNING_1.get()
-                    : lodTier == 1 ? ClientConfig.AURA_LOD_LIGHTNING_2.get() : false;
-            if (lightningEnabled) {
-                renderLightningCrackle(poseStack, buffer, color, scale, age, ramp, intense, isSSJ, isTurbo, lodTier, alphaScale);
-            }
+            // The new mesh renderer owns the silhouette and internal energy strands.
+            // All active aura geometry is now delegated to AuraMeshRenderer.
+            AuraMeshRenderer.render(poseStack, buffer, color, scale, age, ramp,
+                    charging, transforming, isSSJ, isTurbo, lodTier, alphaScale);
 
         } finally {
             poseStack.popPose();

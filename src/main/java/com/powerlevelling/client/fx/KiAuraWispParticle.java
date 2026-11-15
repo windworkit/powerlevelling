@@ -1,5 +1,8 @@
 package com.powerlevelling.client.fx;
 
+import com.powerlevelling.character.CharacterSnapshot;
+import com.powerlevelling.client.ClientCharacters;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -10,6 +13,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Energy wisp particle - elongated, flowing energy strands that spiral upward.
@@ -41,8 +45,8 @@ public class KiAuraWispParticle extends TextureSheetParticle {
         this.gravity = 0f;
         this.hasPhysics = false;
         this.friction = 0.97f;
-        this.lifetime = 80 + this.random.nextInt(60); // 80-140 ticks
-        this.baseSize = 0.18f + this.random.nextFloat() * 0.12f;
+        this.lifetime = 48 + this.random.nextInt(24); // 48-72 ticks: steady upward flow with regular refresh
+        this.baseSize = 0.22f + this.random.nextFloat() * 0.14f;
         this.quadSize = baseSize;
         this.orbitRadius = orbitRadius;
         this.orbitSpeed = orbitSpeed;
@@ -68,7 +72,7 @@ public class KiAuraWispParticle extends TextureSheetParticle {
     }
 
     /** Maximum alpha for wisps, driven by config (default 0.35). */
-    private static float maxAlpha = 0.35f;
+    private static float maxAlpha = 0.72f;
 
     public static void setMaxAlpha(float alpha) {
         maxAlpha = Mth.clamp(alpha, 0f, 1f);
@@ -133,6 +137,26 @@ public class KiAuraWispParticle extends TextureSheetParticle {
         return LightTexture.FULL_BRIGHT;
     }
 
+    private static int auraColorAt(ClientLevel level, double x, double y, double z) {
+        Player nearest = null;
+        double nearestDistance = 16.0;
+        for (Player candidate : level.players()) {
+            double distance = candidate.distanceToSqr(x, y, z);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = candidate;
+            }
+        }
+        if (nearest != null) {
+            CharacterSnapshot snapshot = ClientCharacters.effective(nearest.getId());
+            if (snapshot != null && snapshot.created()) {
+                int color = snapshot.auraColor() >= 0 ? snapshot.auraColor() : snapshot.kiColor();
+                if (color >= 0) return color & 0xFFFFFF;
+            }
+        }
+        return 0xFF5A35;
+    }
+
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -151,8 +175,9 @@ public class KiAuraWispParticle extends TextureSheetParticle {
             float startAngle = level.random.nextFloat() * Mth.TWO_PI;
             float rise = 0.03f + level.random.nextFloat() * 0.04f;
             boolean spiral = level.random.nextBoolean();
-            // Default to white; AuraFx will override with player's ki color via direct constructor
-            int color = 0xFFFFFF;
+            // Match the nearest player's configured aura color so optional wisps share
+            // the same energy palette as the body-hugging aura mesh.
+            int color = auraColorAt(level, x, y, z);
             
             return new KiAuraWispParticle(level, x, y, z, 0, 0, 0, sprites, 
                     radius, oSpeed, startAngle, vOffset, rise, spiral, color);

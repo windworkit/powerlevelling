@@ -44,28 +44,28 @@ public class ClientConfig {
 
     // --- Aura Particle Counts (per-state) ---
     public static final ModConfigSpec.IntValue AURA_PARTICLE_WISPS_CHARGING = BUILDER
-            .comment("Max energy wisps while charging (particle system); default 0 (disabled - AuraLayer handles wisps), range 0–30.")
-            .defineInRange("auraParticleWispsCharging", 0, 0, 30);
+            .comment("Energy wisps emitted upward from the body while charging; default 8, range 0–30.")
+            .defineInRange("auraParticleWispsCharging", 8, 0, 30);
     public static final ModConfigSpec.IntValue AURA_PARTICLE_WISPS_SSJ = BUILDER
-            .comment("Max energy wisps in Super Saiyan (particle system); default 0 (disabled - AuraLayer handles wisps), range 0–30.")
-            .defineInRange("auraParticleWispsSSJ", 0, 0, 30);
+            .comment("Energy wisps emitted upward from the body in Super Saiyan; default 8, range 0–30.")
+            .defineInRange("auraParticleWispsSSJ", 8, 0, 30);
     public static final ModConfigSpec.IntValue AURA_PARTICLE_WISPS_TRANSFORMING = BUILDER
-            .comment("Max energy wisps while transforming (particle system); default 0 (disabled - AuraLayer handles wisps), range 0–40.")
-            .defineInRange("auraParticleWispsTransforming", 0, 0, 40);
+            .comment("Energy wisps emitted upward from the body while transforming; default 12, range 0–40.")
+            .defineInRange("auraParticleWispsTransforming", 12, 0, 40);
     public static final ModConfigSpec.IntValue AURA_PARTICLE_WISPS_STANCE = BUILDER
-            .comment("Max energy wisps in combat stance (particle system); default 0 (disabled - AuraLayer handles wisps), range 0–10.")
-            .defineInRange("auraParticleWispsStance", 0, 0, 10);
+            .comment("Energy wisps emitted upward from the body in stance; default 4, range 0–10.")
+            .defineInRange("auraParticleWispsStance", 4, 0, 10);
 
     public static final ModConfigSpec.IntValue AURA_PARTICLE_ROCKS_CHARGING = BUILDER
-            .comment("Max ground rocks while charging; default 2 (subtle lifting debris), range 0–15.")
-            .defineInRange("auraParticleRocksCharging", 2, 0, 15);
+            .comment("Small rocks launched from nearby ground while charging; default 4, range 0–15.")
+            .defineInRange("auraParticleRocksCharging", 4, 0, 15);
     public static final ModConfigSpec.IntValue AURA_PARTICLE_ROCKS_TRANSFORMING = BUILDER
             .comment("Max ground rocks while transforming; default 3, range 0–20.")
             .defineInRange("auraParticleRocksTransforming", 3, 0, 20);
 
     public static final ModConfigSpec.IntValue AURA_PARTICLE_LARGE_ROCKS_CHARGING = BUILDER
-            .comment("Max large rocks while charging (high intensity only); default 0, range 0–5.")
-            .defineInRange("auraParticleLargeRocksCharging", 0, 0, 5);
+            .comment("Large stones lifted from nearby ground at high charge; default 2, range 0–5.")
+            .defineInRange("auraParticleLargeRocksCharging", 2, 0, 5);
     public static final ModConfigSpec.IntValue AURA_PARTICLE_LARGE_ROCKS_TRANSFORMING = BUILDER
             .comment("Max large rocks while transforming; default 1, range 0–8.")
             .defineInRange("auraParticleLargeRocksTransforming", 1, 0, 8);
@@ -81,8 +81,8 @@ public class ClientConfig {
             .defineInRange("auraParticleGroundRingsSSJ", 0, 0, 100);
 
     public static final ModConfigSpec.IntValue AURA_PARTICLE_DEBRIS_BURST = BUILDER
-            .comment("Max debris particles on initial charge start; default 0 (AuraLayer handles ground flare), range 0–25.")
-            .defineInRange("auraParticleDebrisBurst", 0, 0, 25);
+            .comment("Ground fragments burst outward around the player when charging begins; default 8, range 0–25.")
+            .defineInRange("auraParticleDebrisBurst", 8, 0, 25);
 
     // --- Aura Particle Orbit Radii (blocks) ---
     public static final ModConfigSpec.DoubleValue AURA_PARTICLE_WISP_RADIUS_BASE = BUILDER
@@ -100,8 +100,8 @@ public class ClientConfig {
 
     // --- Aura Particle Alpha ---
     public static final ModConfigSpec.DoubleValue AURA_PARTICLE_WISP_ALPHA = BUILDER
-            .comment("Base alpha for energy wisps (0-1); default 0.35.")
-            .defineInRange("auraParticleWispAlpha", 0.35, 0.0, 1.0);
+            .comment("Base alpha for energy wisps (0-1); default 0.72.")
+            .defineInRange("auraParticleWispAlpha", 0.72, 0.0, 1.0);
     public static final ModConfigSpec.DoubleValue AURA_PARTICLE_ROCK_ALPHA = BUILDER
             .comment("Base alpha for rocks (0-1); default 0.45.")
             .defineInRange("auraParticleRockAlpha", 0.45, 0.0, 1.0);

@@ -13,6 +13,7 @@ import com.powerlevelling.registry.ModParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -53,7 +54,7 @@ public final class AuraFx {
     /** Call once on client startup to sync particle alphas from config. */
     public static void initParticleAlphas() {
         if (particleAlphasInitialized) return;
-        KiAuraWispParticle.setMaxAlpha(ClientConfig.AURA_PARTICLE_WISP_ALPHA.get().floatValue());
+        KiAuraWispParticle.setMaxAlpha(Math.max(0.72f, ClientConfig.AURA_PARTICLE_WISP_ALPHA.get().floatValue()));
         KiRockParticle.setMaxAlpha(ClientConfig.AURA_PARTICLE_ROCK_ALPHA.get().floatValue());
         KiRockLargeParticle.setMaxAlpha(0.5f); // Large rocks use fixed slightly higher alpha
         KiDebrisParticle.setMaxAlpha(ClientConfig.AURA_PARTICLE_DEBRIS_ALPHA.get().floatValue());
@@ -165,12 +166,11 @@ public final class AuraFx {
         double yCenter = player.getY() + height * 0.5;
         
         // ===== ENERGY WISPS (flowing energy strands) =====
-        int maxWisps = ClientConfig.AURA_PARTICLE_WISPS_CHARGING.get();
-        int wispCount = Math.max(1, Mth.floor(maxWisps * auraDensity * (0.5f + 0.5f * t)));
+        int maxWisps = Math.max(8, ClientConfig.AURA_PARTICLE_WISPS_CHARGING.get());
+        int wispCount = Math.max(0, Mth.floor(maxWisps * auraDensity * (0.5f + 0.5f * t)));
         
         float wispRadiusBase = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_BASE.get().floatValue();
         float wispRadiusRamp = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_RAMP.get().floatValue();
-        float wispAlpha = (float) ClientConfig.AURA_PARTICLE_WISP_ALPHA.get().floatValue();
         
         for (int i = 0; i < wispCount && KiAuraWispParticle.canSpawn(); i++) {
             // Orbit radius increases with charge (much smaller now, matches aura layer scale)
@@ -179,7 +179,7 @@ public final class AuraFx {
             float orbitSpeed = (0.03f + 0.05f * t + rand.nextFloat() * 0.04f) * (rand.nextBoolean() ? 1f : -1f);
             float startAngle = rand.nextFloat() * Mth.TWO_PI;
             // Vertical position along body
-            float verticalOffset = -0.3f + rand.nextFloat() * (float)height * 1.1f;
+            float verticalOffset = -0.34f * (float)height + rand.nextFloat() * (float)height * 0.42f;
             // Rise speed
             float riseSpeed = 0.02f + 0.04f * t + rand.nextFloat() * 0.03f;
             // Some spiral inward
@@ -195,67 +195,25 @@ public final class AuraFx {
         }
         
         // ===== GROUND ROCKS (rocks lifted from ground) =====
-        int maxRocks = ClientConfig.AURA_PARTICLE_ROCKS_CHARGING.get();
-        int rockCount = Math.max(1, Mth.floor(maxRocks * auraDensity * (0.5f + 0.5f * t * t)));
+        int maxRocks = Math.max(4, ClientConfig.AURA_PARTICLE_ROCKS_CHARGING.get());
+        int rockCount = Math.max(0, Mth.floor(maxRocks * auraDensity * (0.5f + 0.5f * t * t)));
         
-        float rockRadiusBase = (float) ClientConfig.AURA_PARTICLE_ROCK_RADIUS_BASE.get().floatValue();
-        float rockRadiusRamp = (float) ClientConfig.AURA_PARTICLE_ROCK_RADIUS_RAMP.get().floatValue();
-        float rockAlpha = (float) ClientConfig.AURA_PARTICLE_ROCK_ALPHA.get().floatValue();
-        
-        for (int i = 0; i < rockCount && KiRockParticle.canSpawn(); i++) {
-            float orbitRadius = rockRadiusBase + t * rockRadiusRamp + rand.nextFloat() * 0.2f;
-            float orbitSpeed = (0.015f + 0.025f * t + rand.nextFloat() * 0.02f) * (rand.nextBoolean() ? 1f : -1f);
-            float startAngle = rand.nextFloat() * Mth.TWO_PI;
-            // Rocks start from ground level
-            float verticalOffset = -(float)height * 0.5f + rand.nextFloat() * (float)height * 0.3f;
-            float riseSpeed = 0.01f + 0.02f * t + rand.nextFloat() * 0.015f;
-            
-            double x = player.getX();
-            double z = player.getZ();
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_ROCK.get(), x, player.getY(), z,
-                        orbitRadius, verticalOffset, orbitSpeed);
-            }
+        if (KiFx.particlesAllowed(mc())) {
+            spawnGroundRocks(level, player, rand, rockCount, t, false);
         }
         
         // ===== LARGE ROCKS (dramatic chunks for high charge) =====
         if (t > 0.5f) {
-            int maxLargeRocks = ClientConfig.AURA_PARTICLE_LARGE_ROCKS_CHARGING.get();
-            int largeRockCount = Math.max(1, Mth.floor(maxLargeRocks * auraDensity * (t - 0.5f) * 2f));
+            int maxLargeRocks = Math.max(2, ClientConfig.AURA_PARTICLE_LARGE_ROCKS_CHARGING.get());
+            int largeRockCount = Math.max(0, Mth.floor(maxLargeRocks * auraDensity * (t - 0.5f) * 2f));
             
-            for (int i = 0; i < largeRockCount && KiRockLargeParticle.canSpawn(); i++) {
-                float orbitRadius = rockRadiusBase * 1.5f + t * rockRadiusRamp * 1.2f + rand.nextFloat() * 0.2f;
-                float orbitSpeed = (0.008f + 0.012f * t + rand.nextFloat() * 0.01f) * (rand.nextBoolean() ? 1f : -1f);
-                float startAngle = rand.nextFloat() * Mth.TWO_PI;
-                float verticalOffset = -(float)height * 0.4f + rand.nextFloat() * (float)height * 0.4f;
-                float riseSpeed = 0.005f + 0.01f * t;
-                
-                double x = player.getX();
-                double z = player.getZ();
-                
-                if (KiFx.particlesAllowed(mc())) {
-                    level.addParticle(ModParticles.KI_ROCK_LARGE.get(), x, player.getY(), z,
-                            orbitRadius, verticalOffset, riseSpeed);
-                }
+            if (KiFx.particlesAllowed(mc())) {
+                spawnGroundRocks(level, player, rand, largeRockCount, t, true);
             }
         }
         
         // ===== GROUND ENERGY RINGS (expanding from feet) =====
-        int ringChance = ClientConfig.AURA_PARTICLE_GROUND_RINGS_CHARGING.get();
-        if (rand.nextInt(100) < ringChance * auraDensity * (0.5f + t)) {
-            float maxRadius = 0.8f + t * 1.2f;
-            float expandSpeed = 0.05f + 0.1f * t;
-            float alpha = (float) ClientConfig.AURA_PARTICLE_GROUND_RING_ALPHA.get().floatValue() * (0.5f + 0.5f * t);
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_GROUND_RING.get(), 
-                        player.getX(), player.getY() + 0.05, player.getZ(),
-                        maxRadius, expandSpeed, alpha);
-            }
-        }
-        
-        // ===== INITIAL DEBRIS BURST (when first starting to charge) =====
+// ===== INITIAL DEBRIS BURST (when first starting to charge) =====
         if (t < 0.125f && rand.nextFloat() < 0.5f * auraDensity) { // roughly first 5 ticks of 40-tick ramp
             spawnDebrisBurst(level, player, tint, t, auraDensity);
         }
@@ -272,8 +230,8 @@ public final class AuraFx {
         double yCenter = player.getY() + height * 0.5;
         
         // Energy wisps
-        int maxWisps = ClientConfig.AURA_PARTICLE_WISPS_TRANSFORMING.get();
-        int wispCount = Math.max(1, Mth.floor(maxWisps * auraDensity * (0.5f + 0.5f * t)));
+        int maxWisps = Math.max(12, ClientConfig.AURA_PARTICLE_WISPS_TRANSFORMING.get());
+        int wispCount = Math.max(0, Mth.floor(maxWisps * auraDensity * (0.5f + 0.5f * t)));
         
         float wispRadiusBase = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_BASE.get().floatValue();
         float wispRadiusRamp = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_RAMP.get().floatValue();
@@ -282,7 +240,7 @@ public final class AuraFx {
             float orbitRadius = wispRadiusBase + t * wispRadiusRamp + rand.nextFloat() * 0.2f;
             float orbitSpeed = (0.04f + 0.08f * t + rand.nextFloat() * 0.06f) * (rand.nextBoolean() ? 1f : -1f);
             float startAngle = rand.nextFloat() * Mth.TWO_PI;
-            float verticalOffset = -0.4f + rand.nextFloat() * (float)height * 1.2f;
+            float verticalOffset = -0.38f * (float)height + rand.nextFloat() * (float)height * 0.44f;
             float riseSpeed = 0.03f + 0.06f * t + rand.nextFloat() * 0.04f;
             boolean spiralInward = rand.nextFloat() < 0.4f + 0.4f * t;
             
@@ -294,59 +252,23 @@ public final class AuraFx {
         }
         
         // Rocks
-        int maxRocks = ClientConfig.AURA_PARTICLE_ROCKS_TRANSFORMING.get();
-        int rockCount = Math.max(1, Mth.floor(maxRocks * auraDensity * (0.5f + 0.5f * t * t)));
+        int maxRocks = Math.max(5, ClientConfig.AURA_PARTICLE_ROCKS_TRANSFORMING.get());
+        int rockCount = Math.max(0, Mth.floor(maxRocks * auraDensity * (0.5f + 0.5f * t * t)));
         
-        float rockRadiusBase = (float) ClientConfig.AURA_PARTICLE_ROCK_RADIUS_BASE.get().floatValue();
-        float rockRadiusRamp = (float) ClientConfig.AURA_PARTICLE_ROCK_RADIUS_RAMP.get().floatValue();
-        
-        for (int i = 0; i < rockCount && KiRockParticle.canSpawn(); i++) {
-            float orbitRadius = rockRadiusBase + t * rockRadiusRamp + rand.nextFloat() * 0.25f;
-            float orbitSpeed = (0.02f + 0.04f * t + rand.nextFloat() * 0.03f) * (rand.nextBoolean() ? 1f : -1f);
-            float startAngle = rand.nextFloat() * Mth.TWO_PI;
-            float verticalOffset = -(float)height * 0.5f + rand.nextFloat() * (float)height * 0.5f;
-            float riseSpeed = 0.015f + 0.03f * t + rand.nextFloat() * 0.02f;
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_ROCK.get(), 
-                        player.getX(), player.getY(), player.getZ(),
-                        orbitRadius, verticalOffset, orbitSpeed);
-            }
+        if (KiFx.particlesAllowed(mc())) {
+            spawnGroundRocks(level, player, rand, rockCount, t, false);
         }
         
         // Large rocks always during transformation
-        int maxLargeRocks = ClientConfig.AURA_PARTICLE_LARGE_ROCKS_TRANSFORMING.get();
-        int largeRockCount = Math.max(1, Mth.floor(maxLargeRocks * auraDensity * (0.5f + 0.5f * t)));
+        int maxLargeRocks = Math.max(2, ClientConfig.AURA_PARTICLE_LARGE_ROCKS_TRANSFORMING.get());
+        int largeRockCount = Math.max(0, Mth.floor(maxLargeRocks * auraDensity * (0.5f + 0.5f * t)));
         
-        for (int i = 0; i < largeRockCount && KiRockLargeParticle.canSpawn(); i++) {
-            float orbitRadius = rockRadiusBase * 1.5f + t * rockRadiusRamp * 1.5f + rand.nextFloat() * 0.3f;
-            float orbitSpeed = (0.01f + 0.02f * t + rand.nextFloat() * 0.015f) * (rand.nextBoolean() ? 1f : -1f);
-            float startAngle = rand.nextFloat() * Mth.TWO_PI;
-            float verticalOffset = -(float)height * 0.4f + rand.nextFloat() * (float)height * 0.6f;
-            float riseSpeed = 0.008f + 0.015f * t;
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_ROCK_LARGE.get(), 
-                        player.getX(), player.getY(), player.getZ(),
-                        orbitRadius, verticalOffset, riseSpeed);
-            }
+        if (KiFx.particlesAllowed(mc())) {
+            spawnGroundRocks(level, player, rand, largeRockCount, t, true);
         }
         
         // Frequent ground rings
-        int ringChance = ClientConfig.AURA_PARTICLE_GROUND_RINGS_TRANSFORMING.get();
-        if (rand.nextInt(100) < ringChance * auraDensity * (0.5f + t)) {
-            float maxRadius = 1.0f + t * 1.8f;
-            float expandSpeed = 0.08f + 0.15f * t;
-            float alpha = (float) ClientConfig.AURA_PARTICLE_GROUND_RING_ALPHA.get().floatValue() * (0.5f + 0.5f * t);
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_GROUND_RING.get(), 
-                        player.getX(), player.getY() + 0.05, player.getZ(),
-                        maxRadius, expandSpeed, alpha);
-            }
-        }
-        
-        // Debris burst periodically during transformation
+// Debris burst periodically during transformation
         if (rand.nextFloat() < 0.03f * auraDensity) {
             spawnDebrisBurst(level, player, tint, t, auraDensity);
         }
@@ -361,8 +283,8 @@ public final class AuraFx {
         double time = gameTime / 20.0; // seconds
         
         // Golden energy wisps - constant flow
-        int maxWisps = ClientConfig.AURA_PARTICLE_WISPS_SSJ.get();
-        int wispCount = Math.max(1, Mth.floor(maxWisps * auraDensity));
+        int maxWisps = Math.max(8, ClientConfig.AURA_PARTICLE_WISPS_SSJ.get());
+        int wispCount = Math.max(0, Mth.floor(maxWisps * auraDensity));
         
         float wispRadiusBase = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_BASE.get().floatValue();
         
@@ -371,7 +293,7 @@ public final class AuraFx {
             float orbitRadius = wispRadiusBase + rand.nextFloat() * 0.15f;
             float orbitSpeed = (0.05f + rand.nextFloat() * 0.05f) * (rand.nextBoolean() ? 1f : -1f);
             float startAngle = rand.nextFloat() * Mth.TWO_PI + (float)(time * 0.8f);
-            float verticalOffset = -0.2f + rand.nextFloat() * (float)height * 0.9f;
+            float verticalOffset = -0.32f * (float)height + rand.nextFloat() * (float)height * 0.42f;
             float riseSpeed = 0.04f + rand.nextFloat() * 0.05f;
             boolean spiralInward = rand.nextFloat() < 0.3f;
             
@@ -383,27 +305,10 @@ public final class AuraFx {
         }
         
         // Occasional golden ground ring
-        int ringChance = ClientConfig.AURA_PARTICLE_GROUND_RINGS_SSJ.get();
-        if (rand.nextInt(100) < ringChance * auraDensity) {
-            float alpha = (float) ClientConfig.AURA_PARTICLE_GROUND_RING_ALPHA.get().floatValue();
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_GROUND_RING.get(), 
-                        player.getX(), player.getY() + 0.05, player.getZ(),
-                        1.2f, 0.12f, alpha);
-            }
-        }
-        
-        // Rare large golden rock (pure energy manifesting as matter)
+// Rare large golden rock (pure energy manifesting as matter)
         if (rand.nextFloat() < 0.005f * auraDensity && KiRockLargeParticle.canSpawn()) {
-            float orbitRadius = wispRadiusBase * 1.5f + rand.nextFloat() * 0.2f;
-            float orbitSpeed = (0.015f + rand.nextFloat() * 0.02f) * (rand.nextBoolean() ? 1f : -1f);
-            float verticalOffset = -0.3f + rand.nextFloat() * (float)height * 0.6f;
-            float riseSpeed = 0.01f;
-            
             if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_ROCK_LARGE.get(), 
-                        player.getX(), player.getY(), player.getZ(),
-                        orbitRadius, verticalOffset, riseSpeed);
+                spawnGroundRocks(level, player, rand, 1, 0.5f, true);
             }
         }
     }
@@ -412,15 +317,13 @@ public final class AuraFx {
     private static void spawnStanceAura(ClientLevel level, Player player, long gameTime, float density, float auraDensity) {
         if (auraDensity <= 0f) return;
         RandomSource rand = level.random;
-        int tint = auraColorOf(player, -1);
-        if (tint < 0) return;
-        
+        // The main body aura remains visible even when no custom character color is set.
         double height = player.getBbHeight();
         double yCenter = player.getY() + height * 0.5;
         
         // Very few wisps
-        int maxWisps = ClientConfig.AURA_PARTICLE_WISPS_STANCE.get();
-        int wispCount = Math.max(1, Mth.floor(maxWisps * auraDensity));
+        int maxWisps = Math.max(4, ClientConfig.AURA_PARTICLE_WISPS_STANCE.get());
+        int wispCount = Math.max(0, Mth.floor(maxWisps * auraDensity));
         
         float wispRadiusBase = (float) ClientConfig.AURA_PARTICLE_WISP_RADIUS_BASE.get().floatValue();
         
@@ -428,7 +331,7 @@ public final class AuraFx {
             float orbitRadius = wispRadiusBase + rand.nextFloat() * 0.1f;
             float orbitSpeed = (0.02f + rand.nextFloat() * 0.02f) * (rand.nextBoolean() ? 1f : -1f);
             float startAngle = rand.nextFloat() * Mth.TWO_PI;
-            float verticalOffset = -0.1f + rand.nextFloat() * (float)height * 0.7f;
+            float verticalOffset = -0.32f * (float)height + rand.nextFloat() * (float)height * 0.42f;
             float riseSpeed = 0.015f + rand.nextFloat() * 0.015f;
             boolean spiralInward = false;
             
@@ -440,53 +343,75 @@ public final class AuraFx {
         }
     }
     
-    /** DRAGON BALL STYLE: Initial debris burst when charging starts - ground breaks up */
+    /** Small fragments burst outward from the actual ground around the player's footprint. */
     private static void spawnDebrisBurst(ClientLevel level, Player player, int color, float intensity, float auraDensity) {
         if (auraDensity <= 0f) return;
         RandomSource rand = level.random;
-        
-        // Check if there's solid ground below
-        BlockPos belowPos = BlockPos.containing(player.getX(), player.getY() - 0.1, player.getZ());
-        BlockState state = level.getBlockState(belowPos);
-        if (state.isAir()) return; // No ground to break
-        
-        int maxDebris = ClientConfig.AURA_PARTICLE_DEBRIS_BURST.get();
-        int debrisCount = Math.max(1, Mth.floor(maxDebris * auraDensity * (0.5f + intensity)));
-        
-        double yGround = player.getY();
-        float debrisAlpha = (float) ClientConfig.AURA_PARTICLE_DEBRIS_ALPHA.get().floatValue();
-        
+        int maxDebris = Math.max(8, ClientConfig.AURA_PARTICLE_DEBRIS_BURST.get());
+        int debrisCount = Math.max(0, Mth.floor(maxDebris * auraDensity * (0.5f + intensity)));
+        if (debrisCount <= 0 || !KiFx.particlesAllowed(mc())) return;
+
         for (int i = 0; i < debrisCount; i++) {
-            double angle = rand.nextDouble() * Math.PI * 2.0;
+            double angle = rand.nextDouble() * Mth.TWO_PI;
+            double distance = 0.55 + rand.nextDouble() * 0.95;
+            double x = player.getX() + Math.cos(angle) * distance;
+            double z = player.getZ() + Math.sin(angle) * distance;
+            double yGround = findGroundSurfaceY(level, player, x, z);
+            if (!Double.isFinite(yGround)) continue;
+
             double speed = 0.08 + rand.nextDouble() * 0.15;
             double vx = Math.cos(angle) * speed;
             double vz = Math.sin(angle) * speed;
-            double vy = 0.15 + rand.nextDouble() * 0.25; // Upward burst
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_DEBRIS.get(),
-                        player.getX(), yGround, player.getZ(),
-                        vx, vy, vz);
-            }
+            double vy = 0.15 + rand.nextDouble() * 0.25;
+            level.addParticle(ModParticles.KI_DEBRIS.get(), x, yGround + 0.015, z, vx, vy, vz);
         }
-        
-        // Also spawn some rocks immediately
+
         int maxRocks = ClientConfig.AURA_PARTICLE_ROCKS_CHARGING.get();
-        int rockCount = Math.max(1, Mth.floor(maxRocks * auraDensity * 0.5f));
-        for (int i = 0; i < rockCount && KiRockParticle.canSpawn(); i++) {
-            float orbitRadius = (float) ClientConfig.AURA_PARTICLE_ROCK_RADIUS_BASE.get().floatValue() + rand.nextFloat() * 0.2f;
-            float orbitSpeed = (0.02f + rand.nextFloat() * 0.03f) * (rand.nextBoolean() ? 1f : -1f);
-            float verticalOffset = -0.5f + rand.nextFloat() * 0.5f;
-            float riseSpeed = 0.02f + rand.nextFloat() * 0.02f;
-            
-            if (KiFx.particlesAllowed(mc())) {
-                level.addParticle(ModParticles.KI_ROCK.get(), 
-                        player.getX(), player.getY(), player.getZ(),
-                        orbitRadius, verticalOffset, orbitSpeed);
+        int rockCount = Math.max(0, Mth.floor(maxRocks * auraDensity * 0.5f));
+        if (rockCount > 0) spawnGroundRocks(level, player, rand, rockCount, intensity, false);
+    }
+
+    /** Finds the exposed collision surface near the player's feet. */
+    private static double findGroundSurfaceY(ClientLevel level, Player player, double x, double z) {
+        int blockX = Mth.floor(x);
+        int blockZ = Mth.floor(z);
+        int baseY = Mth.floor(player.getY() + 0.1);
+        for (int y = baseY; y >= baseY - 3; y--) {
+            BlockPos pos = new BlockPos(blockX, y, blockZ);
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir()) continue;
+            var shape = state.getCollisionShape(level, pos);
+            if (shape.isEmpty()) continue;
+            return y + shape.max(Direction.Axis.Y) + 0.015;
+        }
+        return Double.NaN;
+    }
+
+    /** Launches stones from separate points around the player, then lets them rise. */
+    private static void spawnGroundRocks(ClientLevel level, Player player, RandomSource rand,
+                                         int count, float charge, boolean large) {
+        for (int i = 0; i < count; i++) {
+            if (large ? !KiRockLargeParticle.canSpawn() : !KiRockParticle.canSpawn()) break;
+            double angle = rand.nextDouble() * Mth.TWO_PI;
+            double distance = 0.72 + rand.nextDouble() * (0.55 + 0.8 * charge);
+            double x = player.getX() + Math.cos(angle) * distance;
+            double z = player.getZ() + Math.sin(angle) * distance;
+            double y = findGroundSurfaceY(level, player, x, z);
+            if (!Double.isFinite(y)) continue;
+
+            float orbitRadius = large ? 0.08f + rand.nextFloat() * 0.12f
+                    : 0.035f + rand.nextFloat() * 0.10f;
+            float orbitSpeed = (large ? 0.008f : 0.018f) + rand.nextFloat() * (large ? 0.012f : 0.028f);
+            if (rand.nextBoolean()) orbitSpeed = -orbitSpeed;
+
+            if (large) {
+                level.addParticle(ModParticles.KI_ROCK_LARGE.get(), x, y, z, orbitRadius, 0.0f, orbitSpeed);
+            } else {
+                level.addParticle(ModParticles.KI_ROCK.get(), x, y, z, orbitRadius, 0.0f, orbitSpeed);
             }
         }
     }
-    
+
     /** Helper to get Minecraft instance safely */
     private static Minecraft mc() {
         return Minecraft.getInstance();
